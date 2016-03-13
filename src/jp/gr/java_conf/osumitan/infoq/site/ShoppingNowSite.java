@@ -42,7 +42,7 @@ public class ShoppingNowSite extends EnquateSite {
 		super.residenceAnswerPath = By.xpath("//option[contains(text(),'千葉県')]");
 		// 職業質問パス
 		super.jobQuestionPath = By.xpath("//h2[contains(text(),'あなたのご職業をお知らせください。')]");
-		/** 職業回答パス */
+		// 職業回答パス
 		super.jobAnswerPath = By.xpath("//input[@value='会社員（契約・派遣社員含む）']");
 	}
 }
