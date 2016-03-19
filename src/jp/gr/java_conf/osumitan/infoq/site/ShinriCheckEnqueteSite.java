@@ -3,17 +3,17 @@ package jp.gr.java_conf.osumitan.infoq.site;
 import org.openqa.selenium.By;
 
 /**
- * アンケートサイト：manga-enquete.com
+ * アンケートサイト：shinricheck-enquete.net
  */
-public class MangaEnquateSite extends EnquateSite {
+public class ShinriCheckEnqueteSite extends EnquateSite {
 
 	/**
 	 * コンストラクタ
 	 */
-	public MangaEnquateSite() {
+	public ShinriCheckEnqueteSite() {
 		super();
 		// ドメイン
-		super.domain = "manga-enquete.com";
+		super.domain = "shinricheck-enquete.net";
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//input[@type='submit' or @type='image']");
 		// 最終テキストパス
@@ -27,7 +27,7 @@ public class MangaEnquateSite extends EnquateSite {
 		// オプションセレクタ
 		super.optionSelector = By.cssSelector("select option");
 		// 性別質問パス
-		super.genderQuestionPath = By.xpath("//*[contains(text(),'あなたの性別をお知らせ下さい')]");
+		super.genderQuestionPath = By.xpath("//*[contains(text(),'あなたの性別をお選びください')]");
 		// 性別回答パス
 		super.genderAnswerPath = By.xpath("//input[@type='radio' and @value='1']");
 		// 年齢質問パス

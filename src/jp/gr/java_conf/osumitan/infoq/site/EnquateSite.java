@@ -39,8 +39,6 @@ public abstract class EnquateSite {
 	protected By jobQuestionPath;
 	/** 職業回答パス */
 	protected By jobAnswerPath;
-	/** 広告クローズボタンセレクタ */
-	protected By adCloseButton;
 
 	/**
 	 * @return domain
@@ -151,12 +149,5 @@ public abstract class EnquateSite {
 	 */
 	public By getJobAnswerPath() {
 		return jobAnswerPath;
-	}
-
-	/**
-	 * @return adCloseButton
-	 */
-	public By getAdCloseButton() {
-		return adCloseButton;
 	}
 }

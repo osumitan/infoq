@@ -13,6 +13,7 @@ import com.google.common.base.Function;
 
 import jp.gr.java_conf.osumitan.infoq.host.Host;
 import jp.gr.java_conf.osumitan.infoq.host.InfoQHost;
+import jp.gr.java_conf.osumitan.infoq.host.QzooHost;
 
 /**
  * infoQメイン
@@ -39,7 +40,7 @@ public class Main {
 	 */
 	public Main() {
 		// ホストリスト
-		this.hostList = Arrays.asList(InfoQHost::new);
+		this.hostList = Arrays.asList(InfoQHost::new, QzooHost::new);
 	}
 
 	/**

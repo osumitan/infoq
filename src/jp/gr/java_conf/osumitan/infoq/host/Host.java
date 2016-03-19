@@ -5,17 +5,19 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import jp.gr.java_conf.osumitan.infoq.site.AdSurveySite;
 import jp.gr.java_conf.osumitan.infoq.site.EnquateSite;
 import jp.gr.java_conf.osumitan.infoq.site.InfoPanelSite;
 import jp.gr.java_conf.osumitan.infoq.site.MangaEnquateSite;
 import jp.gr.java_conf.osumitan.infoq.site.QuizSite;
 import jp.gr.java_conf.osumitan.infoq.site.SaveUpSite;
+import jp.gr.java_conf.osumitan.infoq.site.ShinriCheckEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShoppingNowSite;
 
 /**
@@ -56,6 +58,8 @@ public abstract class Host {
 	protected By completeCloseButtonSelector;
 	/** 更新リンクパス */
 	protected By refreshLinkPath;
+	/** ログアウトリンクセレクタ */
+	protected By logoutLinkSelector;
 	/** ログアウトフォームセレクタ */
 	protected By logoutFormSelector;
 
@@ -72,7 +76,9 @@ public abstract class Host {
 				new ShoppingNowSite(),
 				new MangaEnquateSite(),
 				new QuizSite(),
-				new InfoPanelSite());
+				new InfoPanelSite(),
+				new ShinriCheckEnqueteSite(),
+				new AdSurveySite());
 	}
 
 	/**
@@ -111,7 +117,11 @@ public abstract class Host {
 	 */
 	private void logout() {
 		// ログアウト
-		findElement(this.logoutFormSelector).submit();;
+		if(exists(this.logoutLinkSelector)) {
+			findElement(this.logoutLinkSelector).click();
+		} else if(exists(this.logoutFormSelector)) {
+			findElement(this.logoutFormSelector).submit();
+		}
 	}
 
 	/**
@@ -137,15 +147,14 @@ public abstract class Host {
 				// プルダウンを選択
 				selectPullDown();
 			}
-			// 広告クローズボタンがあったら押下
-			if(exists(this.currentSite.getAdCloseButton())) {
-				WebElement adCloseButton = findElement(this.currentSite.getAdCloseButton());
-				if(adCloseButton.isDisplayed()) {
-					adCloseButton.click();
-				}
+			// 次へボタン
+			if(exists(this.currentSite.getNextButtonSelector())) {
+				// 次へボタン押下
+				click(this.currentSite.getNextButtonSelector());
+			} else {
+				// いったん戻る
+				this.driver.executeScript("window.history.back();");
 			}
-			// 次へボタン押下
-			click(this.currentSite.getNextButtonSelector());
 		}
 		// 最終ボタン押下
 		click(this.currentSite.getFinalButtonSelector());
@@ -331,11 +340,13 @@ public abstract class Host {
 	 * @return エレメント
 	 */
 	private WebElement findElement(By by) {
-		try {
-			return this.driver.findElement(by);
-		} catch(StaleElementReferenceException e) {
-			sleep(100L);
-			return findElement(by);
+		for(;;) {
+			try {
+				return this.driver.findElement(by);
+			} catch(StaleElementReferenceException e) {
+				// リトライ
+				sleep(100L);
+			}
 		}
 	}
 
@@ -345,11 +356,13 @@ public abstract class Host {
 	 * @return エレメントリスト
 	 */
 	private List<WebElement> findElements(By by) {
-		try {
-			return this.driver.findElements(by);
-		} catch(StaleElementReferenceException e) {
-			sleep(100L);
-			return findElements(by);
+		for(;;) {
+			try {
+				return this.driver.findElements(by);
+			} catch(StaleElementReferenceException e) {
+				// リトライ
+				sleep(100L);
+			}
 		}
 	}
 
@@ -372,17 +385,13 @@ public abstract class Host {
 			try {
 				findElement(by).click();
 				b = true;
-			} catch(ElementNotVisibleException e) {
-				// リトライ
-				b = false;
-				sleep(100L);
-			} catch(StaleElementReferenceException e) {
-				// リトライ
-				b = false;
-				sleep(100L);
 			} catch(TimeoutException e) {
 				// タイムアウト時は無視
 				b = true;
+			} catch(WebDriverException e) {
+				// リトライ
+				b = false;
+				sleep(100L);
 			}
 		}
 	}
