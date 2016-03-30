@@ -3,17 +3,17 @@ package jp.gr.java_conf.osumitan.infoq.site;
 import org.openqa.selenium.By;
 
 /**
- * アンケートサイト：saveup.jp
+ * アンケートサイト：kotsuta.com
  */
-public class SaveUpSite extends EnqueteSite {
+public class KotsutaSite extends EnqueteSite {
 
 	/**
 	 * コンストラクタ
 	 */
-	public SaveUpSite() {
+	public KotsutaSite() {
 		super();
 		// ドメイン
-		super.domain = "saveup.jp";
+		super.domain = "kotsuta.com";
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.cssSelector("input.btn-next");
 		// 最終テキストパス

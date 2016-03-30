@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 /**
  * アンケートサイト：adsurvey.media-ad.jp
  */
-public class AdSurveySite extends EnquateSite {
+public class AdSurveySite extends EnqueteSite {
 
 	/**
 	 * コンストラクタ
@@ -20,14 +20,14 @@ public class AdSurveySite extends EnquateSite {
 		super.nextButtonSelector = By.cssSelector("div.btn_next input.btn");
 		// 最終テキストパス
 		super.finalTextPath = By.xpath("//p[contains(text(),'アンケートは以上になります。')]");
-		//TODO 最終ボタンセレクタ
+		// 最終ボタンセレクタ
 		super.finalButtonSelector = super.nextButtonSelector;
 		// ラジオボタンセレクタ
-		super.radioButtonSelector = By.cssSelector("input[type='radio']");
+		super.radioButtonSelector = By.cssSelector("div.answer input[type='radio']");
 		// チェックボックスセレクタ
-		super.checkBoxSelector = By.cssSelector("input[type='checkbox']");
+		super.checkBoxSelector = By.cssSelector("div.answer input[type='checkbox']");
 		// オプションセレクタ
-		super.optionSelector = By.cssSelector("select option");
+		super.optionSelector = By.cssSelector("div.answer select option");
 		// 性別質問パス
 		super.genderQuestionPath = By.xpath("//h2[contains(text(),'あなたの性別を教えてください。')]");
 		// 性別回答パス
@@ -44,5 +44,7 @@ public class AdSurveySite extends EnquateSite {
 		super.jobQuestionPath = By.xpath("//h2[contains(text(),'あなたのご職業をお知らせください。')]");
 		// 職業回答パス
 		super.jobAnswerPath = By.xpath("//label[text()='会社員（契約・派遣社員含む）']/preceding-sibling::input[1]");
+		// ブラックアンケートパス
+		super.blackEnquetePath = By.xpath("//*[contains(text(),'アンケートは見つかりませんでした')]");
 	}
 }

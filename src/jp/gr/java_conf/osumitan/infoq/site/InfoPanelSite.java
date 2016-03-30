@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 /**
  * アンケートサイト：infopanel.jp
  */
-public class InfoPanelSite extends EnquateSite {
+public class InfoPanelSite extends EnqueteSite {
 
 	/**
 	 * コンストラクタ

@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 /**
  * アンケートサイト：shinricheck-enquete.net
  */
-public class ShinriCheckEnqueteSite extends EnquateSite {
+public class ShinriCheckEnqueteSite extends EnqueteSite {
 
 	/**
 	 * コンストラクタ

@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 /**
  * アンケートサイト：shopping-now.jp
  */
-public class ShoppingNowSite extends EnquateSite {
+public class ShoppingNowSite extends EnqueteSite {
 
 	/**
 	 * コンストラクタ

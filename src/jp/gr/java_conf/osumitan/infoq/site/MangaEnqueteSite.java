@@ -5,12 +5,12 @@ import org.openqa.selenium.By;
 /**
  * アンケートサイト：manga-enquete.com
  */
-public class MangaEnquateSite extends EnquateSite {
+public class MangaEnqueteSite extends EnqueteSite {
 
 	/**
 	 * コンストラクタ
 	 */
-	public MangaEnquateSite() {
+	public MangaEnqueteSite() {
 		super();
 		// ドメイン
 		super.domain = "manga-enquete.com";

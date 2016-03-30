@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 /**
  * アンケートサイト
  */
-public abstract class EnquateSite {
+public abstract class EnqueteSite {
 
 	/** ドメイン */
 	protected String domain;
@@ -39,6 +39,8 @@ public abstract class EnquateSite {
 	protected By jobQuestionPath;
 	/** 職業回答パス */
 	protected By jobAnswerPath;
+	/** ブラックアンケートパス */
+	protected By blackEnquetePath;
 
 	/**
 	 * @return domain
@@ -149,5 +151,12 @@ public abstract class EnquateSite {
 	 */
 	public By getJobAnswerPath() {
 		return jobAnswerPath;
+	}
+
+	/**
+	 * @return blackEnquetePath
+	 */
+	public By getBlackEnquetePath() {
+		return blackEnquetePath;
 	}
 }

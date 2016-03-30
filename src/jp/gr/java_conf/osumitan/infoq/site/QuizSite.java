@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 /**
  * アンケートサイト：gmor.ws-g.jp
  */
-public class QuizSite extends EnquateSite {
+public class QuizSite extends EnqueteSite {
 
 	/**
 	 * コンストラクタ

@@ -1,5 +1,6 @@
 package jp.gr.java_conf.osumitan.infoq.host;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,9 +13,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import jp.gr.java_conf.osumitan.infoq.site.AdSurveySite;
-import jp.gr.java_conf.osumitan.infoq.site.EnquateSite;
+import jp.gr.java_conf.osumitan.infoq.site.EnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.InfoPanelSite;
-import jp.gr.java_conf.osumitan.infoq.site.MangaEnquateSite;
+import jp.gr.java_conf.osumitan.infoq.site.KotsutaSite;
+import jp.gr.java_conf.osumitan.infoq.site.MangaEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.QuizSite;
 import jp.gr.java_conf.osumitan.infoq.site.SaveUpSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShinriCheckEnqueteSite;
@@ -28,11 +30,13 @@ public abstract class Host {
 	/** ドライバ */
 	protected RemoteWebDriver driver;
 	/** サイトリスト */
-	protected List<EnquateSite> siteList;
+	protected List<EnqueteSite> siteList;
 	/** メインウィンドウハンドル */
 	protected String mainHandle;
 	/** 現在のアンケートサイト */
-	protected EnquateSite currentSite;
+	protected EnqueteSite currentSite;
+	/** ブラックリスト */
+	protected List<String> blackList;
 
 	/** ログインページURL */
 	protected String loginUrl;
@@ -70,15 +74,18 @@ public abstract class Host {
 	public Host(RemoteWebDriver driver) {
 		// ドライバ
 		this.driver = driver;
+		// ブラックリスト
+		this.blackList = new ArrayList<String>();
 		// サイトリスト
 		this.siteList = Arrays.asList(
 				new SaveUpSite(),
 				new ShoppingNowSite(),
-				new MangaEnquateSite(),
+				new MangaEnqueteSite(),
 				new QuizSite(),
 				new InfoPanelSite(),
 				new ShinriCheckEnqueteSite(),
-				new AdSurveySite());
+				new AdSurveySite(),
+				new KotsutaSite());
 	}
 
 	/**
@@ -88,9 +95,10 @@ public abstract class Host {
 		// ログイン
 		login();
 		// 未回答がなくなるまで
-		while(exists(this.enqueteLinkPath)) {
+		WebElement enqueteLink;
+		while((enqueteLink = findNextEnqueteLink()) != null) {
 			// アンケートに回答
-			enquete();
+			enquete(enqueteLink);
 		}
 		// ログアウト
 		logout();
@@ -126,16 +134,30 @@ public abstract class Host {
 
 	/**
 	 * アンケートに回答
+	 * @param アンケートリンク
 	 */
-	private void enquete() {
+	private void enquete(WebElement enqueteLink) {
 		// アンケートリンクをクリック
-		click(this.enqueteLinkPath);
+		click(enqueteLink);
 		// アンケートウィンドウにスイッチ
 		switchToSubWindow(true);
 		// サイト取得
-		this.currentSite = getEnquateSite();
+		this.currentSite = getEnqueteSite();
 		// IFRAMEにスイッチ
 		switchToIframe();
+		// ブラックアンケートを確認
+		if(exists(this.currentSite.getBlackEnquetePath())) {
+			// ブラックリストに追加
+			this.blackList.add(enqueteLink.getText());
+			// ウィンドウを閉じる
+			this.driver.close();
+			// 	メインウィンドウにスイッチ
+			switchToMainWindow();
+			// 一覧を更新
+			click(this.refreshLinkPath);
+			// 広告処理中断
+			return;
+		}
 		// 最終テキストが出るまで
 		while(!exists(this.currentSite.getFinalTextPath())) {
 			// 特殊質問に回答
@@ -152,8 +174,14 @@ public abstract class Host {
 				// 次へボタン押下
 				click(this.currentSite.getNextButtonSelector());
 			} else {
-				// いったん戻る
-				this.driver.executeScript("window.history.back();");
+				// ウィンドウを閉じる
+				this.driver.close();
+				// 	メインウィンドウにスイッチ
+				switchToMainWindow();
+				// 一覧を更新
+				click(this.refreshLinkPath);
+				// 広告処理中断
+				return;
 			}
 		}
 		// 最終ボタン押下
@@ -231,15 +259,29 @@ public abstract class Host {
 	 * アンケートサイトを取得
 	 * @return アンケートサイト
 	 */
-	private EnquateSite getEnquateSite() {
+	private EnqueteSite getEnqueteSite() {
 		// ドメインから判断
 		String url = this.driver.getCurrentUrl();
-		for(EnquateSite site : this.siteList) {
+		for(EnqueteSite site : this.siteList) {
 			if(url.contains(site.getDomain())) {
 				return site;
 			}
 		}
 		throw new RuntimeException("未知のサイトです。");
+	}
+
+	/**
+	 * 次のアンケートリンクを取得
+	 * @return 次のアンケートリンク
+	 */
+	private WebElement findNextEnqueteLink() {
+		for(WebElement element : findElements(this.enqueteLinkPath)) {
+			String text = element.getText();
+			if(!this.blackList.contains(text)) {
+				return element;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -377,13 +419,13 @@ public abstract class Host {
 
 	/**
 	 * エレメントをクリック
-	 * @param by By
+	 * @param element エレメント
 	 */
-	private void click(By by) {
+	private void click(WebElement element) {
 		boolean b = false;
 		while(!b) {
 			try {
-				findElement(by).click();
+				element.click();
 				b = true;
 			} catch(TimeoutException e) {
 				// タイムアウト時は無視
@@ -394,6 +436,14 @@ public abstract class Host {
 				sleep(100L);
 			}
 		}
+	}
+
+	/**
+	 * エレメントをクリック
+	 * @param by By
+	 */
+	private void click(By by) {
+		click(findElement(by));
 	}
 
 	/**
