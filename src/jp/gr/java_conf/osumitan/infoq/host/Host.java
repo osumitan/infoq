@@ -1,5 +1,8 @@
 package jp.gr.java_conf.osumitan.infoq.host;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +41,8 @@ public abstract class Host {
 	/** ブラックリスト */
 	protected List<String> blackList;
 
+	/** ログイン前ポーズ要否 */
+	protected boolean neesPreLoginPause;
 	/** ログインページURL */
 	protected String loginUrl;
 	/** ログインメールアドレスセレクタ */
@@ -74,6 +79,8 @@ public abstract class Host {
 	public Host(RemoteWebDriver driver) {
 		// ドライバ
 		this.driver = driver;
+		// ログイン前ポーズ要否
+		this.neesPreLoginPause = false;
 		// ブラックリスト
 		this.blackList = new ArrayList<String>();
 		// サイトリスト
@@ -116,6 +123,15 @@ public abstract class Host {
 		setValue(this.loginMailSelector, this.loginMailAddress);
 		// パスワード
 		setValue(this.loginPasswordSelector, this.loginPassword);
+		// ログイン前ポーズ要否
+		if(this.neesPreLoginPause) {
+			try {
+				System.out.println("★★★ ログイン準備ができたらEnter押下 ★★★");
+				new BufferedReader(new InputStreamReader(System.in)).readLine();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
 		// ログインボタン押下
 		click(this.loginButtonSelector);
 	}

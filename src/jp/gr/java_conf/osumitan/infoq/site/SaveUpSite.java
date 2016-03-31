@@ -33,7 +33,7 @@ public class SaveUpSite extends EnqueteSite {
 		// 年齢質問パス
 		super.ageQuestionPath = By.xpath("//span[text()='あなたの年齢をお知らせください。']");
 		// 年齢回答パス
-		super.ageAnswerPath = By.xpath("//label[text()='40-44歳']/ancestor::tr//input[contains(@class,'radio')]");
+		super.ageAnswerPath = By.xpath("//label[text()='40-44歳' or text()='40～44歳']/ancestor::tr//input[contains(@class,'radio')]");
 		// 居住地質問パス
 		super.residenceQuestionPath = By.xpath("//span[text()='あなたのお住まいをお知らせください。']");
 		// 居住地回答パス
