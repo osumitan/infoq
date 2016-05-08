@@ -22,6 +22,7 @@ import jp.gr.java_conf.osumitan.infoq.site.KotsutaSite;
 import jp.gr.java_conf.osumitan.infoq.site.MangaEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.QuizSite;
 import jp.gr.java_conf.osumitan.infoq.site.SaveUpSite;
+import jp.gr.java_conf.osumitan.infoq.site.ShindanAppsSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShinriCheckEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShoppingNowSite;
 
@@ -92,7 +93,8 @@ public abstract class Host {
 				new InfoPanelSite(),
 				new ShinriCheckEnqueteSite(),
 				new AdSurveySite(),
-				new KotsutaSite());
+				new KotsutaSite(),
+				new ShindanAppsSite());
 	}
 
 	/**
@@ -184,11 +186,16 @@ public abstract class Host {
 				selectCheckBox();
 				// プルダウンを選択
 				selectPullDown();
+				// テキストエリアに入力
+				inputTextArea();
 			}
 			// 次へボタン
 			if(exists(this.currentSite.getNextButtonSelector())) {
 				// 次へボタン押下
 				click(this.currentSite.getNextButtonSelector());
+			} else if(this.currentSite.isToWaitWhenNextButtonNotFound()) {
+				// 次へボタンがないとき待つ
+				sleep(100L);
 			} else {
 				// ウィンドウを閉じる
 				this.driver.close();
@@ -360,6 +367,13 @@ public abstract class Host {
 	}
 
 	/**
+	 * テキストエリアに入力
+	 */
+	private void inputTextArea() {
+		setValue(this.currentSite.getTextAreaSelector(), "特になし。");
+	}
+
+	/**
 	 * スリープ
 	 * @param time 時間
 	 */
@@ -398,6 +412,7 @@ public abstract class Host {
 	 * @return エレメント
 	 */
 	private WebElement findElement(By by) {
+		if(by == null) return null;
 		for(;;) {
 			try {
 				return this.driver.findElement(by);
@@ -414,6 +429,7 @@ public abstract class Host {
 	 * @return エレメントリスト
 	 */
 	private List<WebElement> findElements(By by) {
+		if(by == null) return null;
 		for(;;) {
 			try {
 				return this.driver.findElements(by);
@@ -430,6 +446,7 @@ public abstract class Host {
 	 * @param value 値
 	 */
 	private void setValue(By by, String value) {
+		if(!exists(by)) return;
 		findElement(by).sendKeys(value);
 	}
 

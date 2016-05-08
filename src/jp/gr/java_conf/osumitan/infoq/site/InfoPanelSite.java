@@ -26,6 +26,8 @@ public class InfoPanelSite extends EnqueteSite {
 		super.checkBoxSelector = By.cssSelector("input[type='checkbox']");
 		// オプションセレクタ
 		super.optionSelector = By.cssSelector("select option");
+		// テキストエリアセレクタ
+		super.textAreaSelector = By.cssSelector("textarea");
 		// 性別質問パス
 		super.genderQuestionPath = By.xpath("//b[contains(text(),'あなたの性別をお知らせください。')]");
 		// 性別回答パス

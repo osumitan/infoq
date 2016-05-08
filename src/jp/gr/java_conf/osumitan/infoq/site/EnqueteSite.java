@@ -23,6 +23,8 @@ public abstract class EnqueteSite {
 	protected By checkBoxSelector;
 	/** オプションセレクタ */
 	protected By optionSelector;
+	/** テキストエリアセレクタ */
+	protected By textAreaSelector;
 	/** 性別質問パス */
 	protected By genderQuestionPath;
 	/** 性別回答パス */
@@ -41,6 +43,16 @@ public abstract class EnqueteSite {
 	protected By jobAnswerPath;
 	/** ブラックアンケートパス */
 	protected By blackEnquetePath;
+	/** 次へボタンがないとき待つ */
+	protected boolean toWaitWhenNextButtonNotFound;
+
+	/**
+	 * コンストラクタ
+	 */
+	public EnqueteSite() {
+		// 次へボタンがないとき待つ
+		this.toWaitWhenNextButtonNotFound = false;
+	}
 
 	/**
 	 * @return domain
@@ -95,6 +107,13 @@ public abstract class EnqueteSite {
 	 */
 	public By getOptionSelector() {
 		return optionSelector;
+	}
+
+	/**
+	 * @return textAreaSelector
+	 */
+	public By getTextAreaSelector() {
+		return textAreaSelector;
 	}
 
 	/**
@@ -158,5 +177,12 @@ public abstract class EnqueteSite {
 	 */
 	public By getBlackEnquetePath() {
 		return blackEnquetePath;
+	}
+
+	/**
+	 * @return toWaitWhenNextButtonNotFound
+	 */
+	public boolean isToWaitWhenNextButtonNotFound() {
+		return toWaitWhenNextButtonNotFound;
 	}
 }
