@@ -25,6 +25,7 @@ import jp.gr.java_conf.osumitan.infoq.site.SaveUpSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShindanAppsSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShinriCheckEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShoppingNowSite;
+import jp.gr.java_conf.osumitan.infoq.site.SurveyEnqueteSite;
 
 /**
  * ホストの基底クラス
@@ -94,7 +95,8 @@ public abstract class Host {
 				new ShinriCheckEnqueteSite(),
 				new AdSurveySite(),
 				new KotsutaSite(),
-				new ShindanAppsSite());
+				new ShindanAppsSite(),
+				new SurveyEnqueteSite());
 	}
 
 	/**
@@ -107,7 +109,9 @@ public abstract class Host {
 		WebElement enqueteLink;
 		while((enqueteLink = findNextEnqueteLink()) != null) {
 			// アンケートに回答
+System.out.println("@");
 			enquete(enqueteLink);
+System.out.println("#");
 		}
 		// ログアウト
 		logout();
@@ -176,6 +180,7 @@ public abstract class Host {
 			// 広告処理中断
 			return;
 		}
+System.out.println("A");
 		// 最終テキストが出るまで
 		while(!exists(this.currentSite.getFinalTextPath())) {
 			// 特殊質問に回答
@@ -204,36 +209,51 @@ public abstract class Host {
 				// 一覧を更新
 				click(this.refreshLinkPath);
 				// 広告処理中断
+System.out.println("B");
 				return;
 			}
+System.out.println("C");
 		}
+System.out.println("D");
 		// 最終ボタン押下
 		click(this.currentSite.getFinalButtonSelector());
+System.out.println("E");
 		// おまけ質問有無
 		if(exists(this.appendAnswerButtonSelector)) {
+System.out.println("F");
 			// おまけ質問に回答
 			clickRandom(this.appendRadioButtonSelector);
 			clickRandom(this.appendCheckBoxSelector);
 			click(this.appendAnswerButtonSelector);
+System.out.println("G");
 		}
+System.out.println("H");
 		// 完了クローズボタン有無
 		if(exists(this.completeCloseButtonSelector)) {
 			// 完了クローズボタン押下
+System.out.println("I");
 			click(this.completeCloseButtonSelector);
+System.out.println("J");
 		} else {
+System.out.println("K");
 			// ウィンドウを閉じる
 			this.driver.close();
 			// 完了ウィンドウにスイッチ
 			String cmpHandle = switchToSubWindow(false);
 			if(cmpHandle != null) {
 				// 完了クローズボタン押下
+System.out.println("L");
 				click(this.completeCloseButtonSelector);
 			}
+System.out.println("M");
 		}
 		// メインウィンドウにスイッチ
+System.out.println("N");
 		switchToMainWindow();
 		// 一覧を更新
+System.out.println("O");
 		click(this.refreshLinkPath);
+System.out.println("P");
 	}
 
 	/**
