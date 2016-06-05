@@ -45,6 +45,10 @@ public abstract class EnqueteSite {
 	protected By blackEnquetePath;
 	/** 次へボタンがないとき待つ */
 	protected boolean toWaitWhenNextButtonNotFound;
+	/** 質問グループ属性 */
+	protected String questionGroupAttribute;
+	/** 質問グループ識別子 */
+	protected String questionGroupIdentifier;
 
 	/**
 	 * コンストラクタ
@@ -184,5 +188,19 @@ public abstract class EnqueteSite {
 	 */
 	public boolean isToWaitWhenNextButtonNotFound() {
 		return toWaitWhenNextButtonNotFound;
+	}
+
+	/**
+	 * @return questionGroupAttribute
+	 */
+	public String getQuestionGroupAttribute() {
+		return questionGroupAttribute;
+	}
+
+	/**
+	 * @return questionGroupIdentifier
+	 */
+	public String getQuestionGroupIdentifier() {
+		return questionGroupIdentifier;
 	}
 }

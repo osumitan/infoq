@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -24,6 +27,7 @@ import jp.gr.java_conf.osumitan.infoq.site.QuizSite;
 import jp.gr.java_conf.osumitan.infoq.site.SaveUpSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShindanAppsSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShinriCheckEnqueteSite;
+import jp.gr.java_conf.osumitan.infoq.site.ShopQPSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShoppingNowSite;
 import jp.gr.java_conf.osumitan.infoq.site.SurveyEnqueteSite;
 
@@ -31,6 +35,11 @@ import jp.gr.java_conf.osumitan.infoq.site.SurveyEnqueteSite;
  * ホストの基底クラス
  */
 public abstract class Host {
+
+	/** 通常時時ウェイト */
+	private static final long NORMAL_WAIT_INTERVAL = 100L;
+	/** エラー時ウェイト */
+	private static final long ERROR_WAIT_INTERVAL = 5000L;
 
 	/** ドライバ */
 	protected RemoteWebDriver driver;
@@ -96,7 +105,8 @@ public abstract class Host {
 				new AdSurveySite(),
 				new KotsutaSite(),
 				new ShindanAppsSite(),
-				new SurveyEnqueteSite());
+				new SurveyEnqueteSite(),
+				new ShopQPSite());
 	}
 
 	/**
@@ -109,9 +119,7 @@ public abstract class Host {
 		WebElement enqueteLink;
 		while((enqueteLink = findNextEnqueteLink()) != null) {
 			// アンケートに回答
-System.out.println("@");
 			enquete(enqueteLink);
-System.out.println("#");
 		}
 		// ログアウト
 		logout();
@@ -180,27 +188,25 @@ System.out.println("#");
 			// 広告処理中断
 			return;
 		}
-System.out.println("A");
 		// 最終テキストが出るまで
 		while(!exists(this.currentSite.getFinalTextPath())) {
+			// ラジオボタンを選択
+			selectRadioButton();
+			// チェックボックスを選択
+			selectCheckBox();
+			// プルダウンを選択
+			selectPullDown();
+			// テキストエリアに入力
+			inputTextArea();
 			// 特殊質問に回答
-			if(!answerSpecialQuestion()) {
-				// ラジオボタンを選択
-				selectRadioButton();
-				// チェックボックスを選択
-				selectCheckBox();
-				// プルダウンを選択
-				selectPullDown();
-				// テキストエリアに入力
-				inputTextArea();
-			}
+			answerSpecialQuestion();
 			// 次へボタン
 			if(exists(this.currentSite.getNextButtonSelector())) {
 				// 次へボタン押下
 				click(this.currentSite.getNextButtonSelector());
 			} else if(this.currentSite.isToWaitWhenNextButtonNotFound()) {
 				// 次へボタンがないとき待つ
-				sleep(100L);
+				sleep(NORMAL_WAIT_INTERVAL);
 			} else {
 				// ウィンドウを閉じる
 				this.driver.close();
@@ -209,51 +215,36 @@ System.out.println("A");
 				// 一覧を更新
 				click(this.refreshLinkPath);
 				// 広告処理中断
-System.out.println("B");
 				return;
 			}
-System.out.println("C");
 		}
-System.out.println("D");
 		// 最終ボタン押下
 		click(this.currentSite.getFinalButtonSelector());
-System.out.println("E");
 		// おまけ質問有無
 		if(exists(this.appendAnswerButtonSelector)) {
-System.out.println("F");
 			// おまけ質問に回答
 			clickRandom(this.appendRadioButtonSelector);
 			clickRandom(this.appendCheckBoxSelector);
 			click(this.appendAnswerButtonSelector);
-System.out.println("G");
 		}
-System.out.println("H");
 		// 完了クローズボタン有無
 		if(exists(this.completeCloseButtonSelector)) {
 			// 完了クローズボタン押下
-System.out.println("I");
 			click(this.completeCloseButtonSelector);
-System.out.println("J");
 		} else {
-System.out.println("K");
 			// ウィンドウを閉じる
 			this.driver.close();
 			// 完了ウィンドウにスイッチ
 			String cmpHandle = switchToSubWindow(false);
 			if(cmpHandle != null) {
 				// 完了クローズボタン押下
-System.out.println("L");
 				click(this.completeCloseButtonSelector);
 			}
-System.out.println("M");
 		}
 		// メインウィンドウにスイッチ
-System.out.println("N");
 		switchToMainWindow();
 		// 一覧を更新
-System.out.println("O");
 		click(this.refreshLinkPath);
-System.out.println("P");
 	}
 
 	/**
@@ -283,7 +274,7 @@ System.out.println("P");
 				b = true;
 				return null;
 			} else {
-				sleep(100L);
+				sleep(NORMAL_WAIT_INTERVAL);
 			}
 		}
 		return null;
@@ -310,7 +301,7 @@ System.out.println("P");
 				return site;
 			}
 		}
-		throw new RuntimeException("未知のサイトです。");
+		throw new RuntimeException("未知のサイトです。" + url);
 	}
 
 	/**
@@ -329,32 +320,31 @@ System.out.println("P");
 
 	/**
 	 * 特殊質問に回答
-	 * @return 特殊質問に回答したか
 	 */
-	private boolean answerSpecialQuestion() {
+	private void answerSpecialQuestion() {
 		// 性別
 		if(exists(this.currentSite.getGenderQuestionPath())) {
-			click(this.currentSite.getGenderAnswerPath());
-			return true;
+			if(exists(this.currentSite.getGenderAnswerPath())) {
+				click(this.currentSite.getGenderAnswerPath());
+			}
 		}
 		// 年齢
-		else if(exists(this.currentSite.getAgeQuestionPath())) {
-			click(this.currentSite.getAgeAnswerPath());
-			return true;
+		if(exists(this.currentSite.getAgeQuestionPath())) {
+			if(exists(this.currentSite.getAgeAnswerPath())) {
+				click(this.currentSite.getAgeAnswerPath());
+			}
 		}
 		// 居住地
-		else if(exists(this.currentSite.getResidenceQuestionPath())) {
-			click(this.currentSite.getResidenceAnswerPath());
-			return true;
+		if(exists(this.currentSite.getResidenceQuestionPath())) {
+			if(exists(this.currentSite.getResidenceAnswerPath())) {
+				click(this.currentSite.getResidenceAnswerPath());
+			}
 		}
 		// 職業
-		else if(exists(this.currentSite.getJobQuestionPath())) {
-			click(this.currentSite.getJobAnswerPath());
-			return true;
-		}
-		// 特殊質問ではない
-		else {
-			return false;
+		if(exists(this.currentSite.getJobQuestionPath())) {
+			if(exists(this.currentSite.getJobAnswerPath())) {
+				click(this.currentSite.getJobAnswerPath());
+			}
 		}
 	}
 
@@ -376,14 +366,7 @@ System.out.println("P");
 	 * プルダウンを選択
 	 */
 	private void selectPullDown() {
-		// 空の選択肢は選ばない
-		if(!exists(this.currentSite.getOptionSelector())) {
-			return;
-		}
-		WebElement option = null;
-		while(option == null || StringUtils.isBlank(option.getAttribute("value"))) {
-			option = clickRandom(this.currentSite.getOptionSelector());
-		}
+		clickRandom(this.currentSite.getOptionSelector());
 	}
 
 	/**
@@ -438,7 +421,7 @@ System.out.println("P");
 				return this.driver.findElement(by);
 			} catch(StaleElementReferenceException e) {
 				// リトライ
-				sleep(100L);
+				sleep(ERROR_WAIT_INTERVAL);
 			}
 		}
 	}
@@ -455,7 +438,7 @@ System.out.println("P");
 				return this.driver.findElements(by);
 			} catch(StaleElementReferenceException e) {
 				// リトライ
-				sleep(100L);
+				sleep(ERROR_WAIT_INTERVAL);
 			}
 		}
 	}
@@ -483,10 +466,13 @@ System.out.println("P");
 			} catch(TimeoutException e) {
 				// タイムアウト時は無視
 				b = true;
+			} catch(StaleElementReferenceException e) {
+				// StaleElementReferenceException時は無視
+				b = true;
 			} catch(WebDriverException e) {
 				// リトライ
 				b = false;
-				sleep(100L);
+				sleep(ERROR_WAIT_INTERVAL);
 			}
 		}
 	}
@@ -504,14 +490,38 @@ System.out.println("P");
 	 * @param by By
 	 * @return クリックしたエレメント
 	 */
-	private WebElement clickRandom(By by) {
-		List<WebElement> list = findElements(by);
-		if(list == null || list.isEmpty()) {
-			return null;
+	private void clickRandom(By by) {
+		List<WebElement> listAll = findElements(by);
+		if(listAll == null || listAll.isEmpty()) {
+			return;
 		}
-		Double index = Math.random() * list.size();
-		WebElement element = list.get(index.intValue());
-		element.click();
-		return element;
+		HashMap<String, List<WebElement>> map = new HashMap<String, List<WebElement>>();
+		String attr = this.currentSite.getQuestionGroupAttribute();
+		String regexp = this.currentSite.getQuestionGroupIdentifier();
+		if(StringUtils.isBlank(attr) || StringUtils.isBlank(regexp)) {
+			// 質問グループなし
+			map.put("*", listAll);
+		} else {
+			// 質問グループあり
+			Pattern ptn = Pattern.compile(regexp);
+			for(WebElement elm : listAll) {
+				String value = elm.getAttribute(attr);
+				if(!StringUtils.isBlank(value)) {
+					Matcher m = ptn.matcher(value);
+					m.find();
+					String id = m.group(1);
+					List<WebElement> list = map.get(id);
+					if(list == null) {
+						list = new ArrayList<WebElement>();
+						map.put(id, list);
+					}
+					list.add(elm);
+				}
+			}
+		}
+		for(List<WebElement> list : map.values()) {
+			Double index = Math.random() * list.size();
+			click(list.get(index.intValue()));
+		}
 	}
 }

@@ -21,11 +21,11 @@ public class InfoPanelSite extends EnqueteSite {
 		// 最終ボタンセレクタ
 		super.finalButtonSelector = super.nextButtonSelector;
 		// ラジオボタンセレクタ
-		super.radioButtonSelector = By.cssSelector("input[type='radio']");
+		super.radioButtonSelector = By.cssSelector("input[type='radio'][name^='q']");
 		// チェックボックスセレクタ
-		super.checkBoxSelector = By.cssSelector("input[type='checkbox']");
+		super.checkBoxSelector = By.cssSelector("input[type='checkbox'][name^='q']");
 		// オプションセレクタ
-		super.optionSelector = By.cssSelector("select option");
+		super.optionSelector = By.cssSelector("select[name^='q'] option");
 		// テキストエリアセレクタ
 		super.textAreaSelector = By.cssSelector("textarea");
 		// 性別質問パス
@@ -44,5 +44,9 @@ public class InfoPanelSite extends EnqueteSite {
 		super.jobQuestionPath = By.xpath("//b[contains(text(),'あなたのご職業をお知らせください。')]");
 		// 職業回答パス
 		super.jobAnswerPath = By.xpath("//label[text()='会社員（契約・派遣社員含む）']/ancestor::tr//input[@type='radio']");
+		// 質問グループ属性
+		this.questionGroupAttribute = "name";
+		// 質問グループ識別子
+		this.questionGroupIdentifier = "(q\\d+)";
 	}
 }
