@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
@@ -167,6 +168,8 @@ public abstract class Host {
 	 * @param アンケートリンク
 	 */
 	private void enquete(WebElement enqueteLink) {
+		// アンケートテキストを退避
+		String enquateText = enqueteLink.getAttribute("onclick");
 		// アンケートリンクをクリック
 		click(enqueteLink);
 		// アンケートウィンドウにスイッチ
@@ -176,9 +179,11 @@ public abstract class Host {
 		// IFRAMEにスイッチ
 		switchToIframe();
 		// ブラックアンケートを確認
-		if(exists(this.currentSite.getBlackEnquetePath())) {
+		// （いきなり次へボタンがない場合も同様）
+		if(exists(this.currentSite.getBlackEnquetePath())
+				|| !exists(this.currentSite.getNextButtonSelector())) {
 			// ブラックリストに追加
-			this.blackList.add(enqueteLink.getText());
+			this.blackList.add(enquateText);
 			// ウィンドウを閉じる
 			this.driver.close();
 			// 	メインウィンドウにスイッチ
@@ -251,6 +256,18 @@ public abstract class Host {
 	 * メインウィンドウにスイッチ
 	 */
 	private void switchToMainWindow() {
+		// メインウィンドウ以外を閉じる
+		for(String handle : this.driver.getWindowHandles()) {
+			if(!this.mainHandle.equals(handle)) {
+				try {
+					this.driver.switchTo().window(handle);
+					this.driver.close();
+				} catch(NoSuchWindowException e) {
+					// スキップ
+				}
+			}
+		}
+		// メインウィンドウにスイッチ
 		this.driver.switchTo().window(this.mainHandle);
 	}
 
@@ -310,7 +327,7 @@ public abstract class Host {
 	 */
 	private WebElement findNextEnqueteLink() {
 		for(WebElement element : findElements(this.enqueteLinkPath)) {
-			String text = element.getText();
+			String text = element.getAttribute("onclick");
 			if(!this.blackList.contains(text)) {
 				return element;
 			}
