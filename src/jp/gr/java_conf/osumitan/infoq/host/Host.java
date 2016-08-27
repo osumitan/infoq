@@ -19,7 +19,9 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import jp.gr.java_conf.osumitan.infoq.site.AdResearchSite;
 import jp.gr.java_conf.osumitan.infoq.site.AdSurveySite;
+import jp.gr.java_conf.osumitan.infoq.site.ColumnEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.EnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.HikikagamiSite;
 import jp.gr.java_conf.osumitan.infoq.site.InfoPanelSite;
@@ -32,6 +34,7 @@ import jp.gr.java_conf.osumitan.infoq.site.ShinriCheckEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShopQPSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShoppingNowSite;
 import jp.gr.java_conf.osumitan.infoq.site.SurveyEnqueteSite;
+import jp.gr.java_conf.osumitan.infoq.site.VoteMediaSite;
 
 /**
  * ホストの基底クラス
@@ -109,7 +112,10 @@ public abstract class Host {
 				new KotsutaSite(),
 				new ShindanAppsSite(),
 				new SurveyEnqueteSite(),
-				new ShopQPSite());
+				new ShopQPSite(),
+				new ColumnEnqueteSite(),
+				new VoteMediaSite(),
+				new AdResearchSite());
 	}
 
 	/**
