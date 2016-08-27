@@ -7,15 +7,18 @@ import org.openqa.selenium.By;
  */
 public class InfoPanelSite extends EnqueteSite {
 
+	/** ドメイン */
+	public static final String DOMAIN = "infopanel.jp";
+
 	/**
 	 * コンストラクタ
 	 */
 	public InfoPanelSite() {
 		super();
 		// ドメイン
-		super.domain = "infopanel.jp";
+		super.domain = DOMAIN;
 		// 次へボタンセレクタ
-		super.nextButtonSelector = By.xpath("//input[@class='btn_next' or @value='次　へ']");
+		super.nextButtonSelector = By.xpath("//input[@type='submit' and (@class='btn_next' or contains(@class,'btn-next') or @value='Next')]");
 		// 最終テキストパス
 		super.finalTextPath = By.cssSelector("img[src*='83d11f3db5fe623a6bc8b596055164922145d2d3.png']");
 		// 最終ボタンセレクタ

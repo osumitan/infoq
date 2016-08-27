@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- project settings -->
+<project name="infoq" default="build.full" basedir=".">
+
+<!-- property settings -->
+<property name="jarname" value="infoq" />
+<property name="file.jar" value="jar/${jarname}.jar" />
+<property name="dir.temp" value="tmp" />
+<property name="dir.src" value="src" />
+<property name="dir.lib" value="lib" />
+<property name="compiler" value="/usr/bin/javac" />
+
+<!-- classpath settings -->
+<fileset id="jars" dir="${dir.lib}" includes="*.jar" />
+<path id="compile.classpath">
+	<fileset refid="jars" />
+</path>
+
+<!-- target.build.full -->
+<target name="build.full" depends="makeJar" />
+
+<!-- target.cleanup -->
+<target name="cleanup">
+	<echo message="cleaning up temp directories..." />
+	<delete dir="${dir.temp}" />
+	<mkdir dir="${dir.temp}" />
+</target>
+
+<!-- target.compile -->
+<target name="compile" depends="cleanup">
+	<echo message="compiling..." />
+	<javac srcdir="${dir.src}" destdir="${dir.temp}" executable="${compiler}">
+		<classpath refid="compile.classpath" />
+	</javac>
+</target>
+
+<!-- target.makeJar -->
+<target name="makeJar" depends="compile">
+	<echo message="making jar files..." />
+	<jar basedir="${dir.temp}" destfile="${file.jar}">
+		<zipgroupfileset refid="jars" />
+		<manifest>
+			<attribute name="Main-Class" value="jp.gr.java_conf.osumitan.infoq.Main" />
+		</manifest>
+	</jar>
+</target>
+
+</project>

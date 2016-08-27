@@ -21,6 +21,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import jp.gr.java_conf.osumitan.infoq.site.AdSurveySite;
 import jp.gr.java_conf.osumitan.infoq.site.EnqueteSite;
+import jp.gr.java_conf.osumitan.infoq.site.HikikagamiSite;
 import jp.gr.java_conf.osumitan.infoq.site.InfoPanelSite;
 import jp.gr.java_conf.osumitan.infoq.site.KotsutaSite;
 import jp.gr.java_conf.osumitan.infoq.site.MangaEnqueteSite;
@@ -102,6 +103,7 @@ public abstract class Host {
 				new MangaEnqueteSite(),
 				new QuizSite(),
 				new InfoPanelSite(),
+				new HikikagamiSite(),
 				new ShinriCheckEnqueteSite(),
 				new AdSurveySite(),
 				new KotsutaSite(),
@@ -195,6 +197,10 @@ public abstract class Host {
 		}
 		// 最終テキストが出るまで
 		while(!exists(this.currentSite.getFinalTextPath())) {
+			// サイト取得（infopanelの場合）
+			if(InfoPanelSite.DOMAIN.equals(this.currentSite.getDomain())) {
+				this.currentSite = getEnqueteSite();
+			}
 			// ラジオボタンを選択
 			selectRadioButton();
 			// チェックボックスを選択
