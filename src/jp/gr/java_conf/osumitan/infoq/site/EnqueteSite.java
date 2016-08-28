@@ -43,6 +43,10 @@ public abstract class EnqueteSite {
 	protected By jobAnswerPath;
 	/** ブラックアンケートパス */
 	protected By blackEnquetePath;
+	/** フロート広告クローズボタンセレクタ */
+	protected By floatAdCloseButtonSelector;
+	/** フロート広告クローズスクリプト */
+	protected String floatAdCloseScript;
 	/** 次へボタンがないとき待つ */
 	protected boolean toWaitWhenNextButtonNotFound;
 	/** 質問グループ属性 */
@@ -181,6 +185,20 @@ public abstract class EnqueteSite {
 	 */
 	public By getBlackEnquetePath() {
 		return blackEnquetePath;
+	}
+
+	/**
+	 * @return floatAdCloseButtonSelector
+	 */
+	public By getFloatAdCloseButtonSelector() {
+		return floatAdCloseButtonSelector;
+	}
+
+	/**
+	 * @return floatAdCloseScript
+	 */
+	public String getFloatAdCloseScript() {
+		return floatAdCloseScript;
 	}
 
 	/**

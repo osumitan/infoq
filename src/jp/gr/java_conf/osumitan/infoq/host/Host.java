@@ -217,6 +217,10 @@ public abstract class Host {
 			inputTextArea();
 			// 特殊質問に回答
 			answerSpecialQuestion();
+			// フロート広告を閉じる
+			if(exists(this.currentSite.getFloatAdCloseButtonSelector())) {
+				this.driver.executeScript(this.currentSite.getFloatAdCloseScript());
+			}
 			// 次へボタン
 			if(exists(this.currentSite.getNextButtonSelector())) {
 				// 次へボタン押下

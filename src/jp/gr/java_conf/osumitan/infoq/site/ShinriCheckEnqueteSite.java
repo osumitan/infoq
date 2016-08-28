@@ -42,5 +42,9 @@ public class ShinriCheckEnqueteSite extends EnqueteSite {
 		super.jobQuestionPath = By.xpath("//*[contains(text(),'あなたのご職業をお知らせ下さい')]");
 		// 職業回答パス
 		super.jobAnswerPath = By.xpath("//input[@type='radio' and @value='3']");
+		// フロート広告クローズボタンセレクタ
+		super.floatAdCloseButtonSelector = By.cssSelector("#inter-close");
+		// フロート広告クローズスクリプト
+		super.floatAdCloseScript = "document.getElementById('inter-close').click();";
 	}
 }

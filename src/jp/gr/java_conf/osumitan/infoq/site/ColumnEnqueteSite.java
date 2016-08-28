@@ -34,5 +34,9 @@ public class ColumnEnqueteSite extends EnqueteSite {
 		super.ageQuestionPath = By.xpath("//*[contains(text(),'あなたの年齢をお知らせ下さい')]");
 		// 年齢回答パス
 		super.ageAnswerPath = By.xpath("//input[@type='radio' and @value='4']");
+		// フロート広告クローズボタンセレクタ
+		super.floatAdCloseButtonSelector = By.cssSelector("#inter-close");
+		// フロート広告クローズスクリプト
+		super.floatAdCloseScript = "document.getElementById('inter-close').click();";
 	}
 }
