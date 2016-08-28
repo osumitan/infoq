@@ -236,7 +236,9 @@ public abstract class Host {
 			}
 		}
 		// 最終ボタン押下
-		click(this.currentSite.getFinalButtonSelector());
+		if(exists(this.currentSite.getFinalButtonSelector())) {
+			click(this.currentSite.getFinalButtonSelector());
+		}
 		// おまけ質問有無
 		if(exists(this.appendAnswerButtonSelector)) {
 			// おまけ質問に回答

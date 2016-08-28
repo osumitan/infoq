@@ -17,9 +17,9 @@ public class VoteMediaSite extends EnqueteSite {
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//*[contains(@class,'start__button') or contains(@class,'button--answer')]");
 		// 最終テキストパス
-		super.finalTextPath = By.xpath("//*[(contains(@class,'button--answer') and @value='回答を終了する')]");
+		super.finalTextPath = By.xpath("//*[contains(@class,'point__text') and contains(.,'お疲れ様') or contains(text(),'以上で、アンケートは終了です。')]");
 		// 最終ボタンセレクタ
-		super.finalButtonSelector = super.nextButtonSelector;
+		super.finalButtonSelector = By.xpath("//*[(contains(@class,'button--answer') and @value='回答を終了する')]");
 		// ラジオボタンセレクタ
 		super.radioButtonSelector = By.cssSelector("label.radio");
 		// 次へボタンがないとき待つ
