@@ -202,7 +202,7 @@ public abstract class Host {
 			return;
 		}
 		// 最終テキストが出るまで
-		while(!exists(this.currentSite.getFinalTextPath())) {
+		while(!existsFinalText()) {
 			// サイト取得（infopanelの場合）
 			if(InfoPanelSite.DOMAIN.equals(this.currentSite.getDomain())) {
 				this.currentSite = getEnqueteSite();
@@ -217,10 +217,6 @@ public abstract class Host {
 			inputTextArea();
 			// 特殊質問に回答
 			answerSpecialQuestion();
-			// フロート広告を閉じる
-			if(exists(this.currentSite.getFloatAdCloseButtonSelector())) {
-				this.driver.executeScript(this.currentSite.getFloatAdCloseScript());
-			}
 			// 次へボタン
 			if(exists(this.currentSite.getNextButtonSelector())) {
 				// 次へボタン押下
@@ -442,6 +438,19 @@ public abstract class Host {
 		}
 		List<WebElement> list = findElements(by);
 		return !list.isEmpty();
+	}
+
+	/**
+	 * 最終テキストが存在するか
+	 * @return 最終テキストが存在するか
+	 */
+	private boolean existsFinalText() {
+		// フロート広告を閉じる
+		if(exists(this.currentSite.getFloatAdCloseButtonSelector())) {
+			this.driver.executeScript(this.currentSite.getFloatAdCloseScript());
+		}
+		// 最終テキストが存在するか
+		return exists(this.currentSite.getFinalTextPath());
 	}
 
 	/**

@@ -42,5 +42,9 @@ public class AdResearchSite extends EnqueteSite {
 		super.jobQuestionPath = By.xpath("//*[contains(text(),'ご職業をお知らせ下さい')]");
 		// 職業回答パス
 		super.jobAnswerPath = By.xpath("//input[contains(@class,'ui-input-radio') and @value='3']/ancestor::li");
+		// フロート広告クローズボタンセレクタ
+		super.floatAdCloseButtonSelector = By.cssSelector("a.button-close");
+		// フロート広告クローズスクリプト
+		super.floatAdCloseScript = "$('a.button-close').click();";
 	}
 }
