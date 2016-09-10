@@ -30,7 +30,7 @@
 <!-- target.compile -->
 <target name="compile" depends="cleanup">
 	<echo message="compiling..." />
-	<javac srcdir="${dir.src}" destdir="${dir.temp}" executable="${compiler}">
+	<javac srcdir="${dir.src}" destdir="${dir.temp}" executable="${compiler}" debug="true">
 		<classpath refid="compile.classpath" />
 	</javac>
 </target>
