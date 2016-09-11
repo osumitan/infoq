@@ -115,7 +115,8 @@ public abstract class Host {
 				new ShopQPSite(),
 				new ColumnEnqueteSite(),
 				new VoteMediaSite(),
-				new AdResearchSite());
+				new AdResearchSite(),
+				new TsukulinkSite());
 	}
 
 	/**
