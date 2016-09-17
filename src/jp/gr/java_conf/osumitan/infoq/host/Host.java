@@ -43,7 +43,7 @@ import jp.gr.java_conf.osumitan.infoq.site.VoteMediaSite;
 public abstract class Host {
 
 	/** 通常時時ウェイト */
-	private static final long NORMAL_WAIT_INTERVAL = 100L;
+	private static final long NORMAL_WAIT_INTERVAL = 1000L;
 	/** エラー時ウェイト */
 	private static final long ERROR_WAIT_INTERVAL = 5000L;
 
@@ -223,9 +223,6 @@ public abstract class Host {
 			if(exists(this.currentSite.getNextButtonSelector())) {
 				// 次へボタン押下
 				click(this.currentSite.getNextButtonSelector());
-			} else if(this.currentSite.isToWaitWhenNextButtonNotFound()) {
-				// 次へボタンがないとき待つ
-				sleep(NORMAL_WAIT_INTERVAL);
 			} else {
 				// ウィンドウを閉じる
 				this.driver.close();
@@ -447,6 +444,10 @@ public abstract class Host {
 	 * @return 最終テキストが存在するか
 	 */
 	private boolean existsFinalText() {
+		// アクションのたびに待つ
+		if(this.currentSite.isToWaitBeforeEveryAction()) {
+			sleep(NORMAL_WAIT_INTERVAL);
+		}
 		// フロート広告を閉じる
 		if(exists(this.currentSite.getFloatAdCloseButtonSelector())) {
 			this.driver.executeScript(this.currentSite.getFloatAdCloseScript());

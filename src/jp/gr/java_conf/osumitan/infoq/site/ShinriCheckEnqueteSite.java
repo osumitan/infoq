@@ -46,5 +46,7 @@ public class ShinriCheckEnqueteSite extends EnqueteSite {
 		super.floatAdCloseButtonSelector = By.cssSelector("#inter-close");
 		// フロート広告クローズスクリプト
 		super.floatAdCloseScript = "document.getElementById('inter-close').click();";
+		// アクションのたびに待つ
+		this.toWaitBeforeEveryAction = true;
 	}
 }

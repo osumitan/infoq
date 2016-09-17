@@ -22,7 +22,7 @@ public class VoteMediaSite extends EnqueteSite {
 		super.finalButtonSelector = By.xpath("//*[(contains(@class,'button--answer') and @value='回答を終了する')]");
 		// ラジオボタンセレクタ
 		super.radioButtonSelector = By.cssSelector("label.radio");
-		// 次へボタンがないとき待つ
-		this.toWaitWhenNextButtonNotFound = true;
+		// アクションのたびに待つ
+		this.toWaitBeforeEveryAction = true;
 	}
 }

@@ -18,7 +18,7 @@ public class InfoPanelSite extends EnqueteSite {
 		// ドメイン
 		super.domain = DOMAIN;
 		// 次へボタンセレクタ
-		super.nextButtonSelector = By.cssSelector("input.btn_next");
+		super.nextButtonSelector = By.xpath("//input[contains(@class,'btn_next') or contains(@class,'btn_submit')]");
 		// 最終テキストパス
 		super.finalTextPath = By.cssSelector("img[src*='83d11f3db5fe623a6bc8b596055164922145d2d3.png']");
 		// 最終ボタンセレクタ

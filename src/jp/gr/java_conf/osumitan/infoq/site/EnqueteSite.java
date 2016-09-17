@@ -47,8 +47,8 @@ public abstract class EnqueteSite {
 	protected By floatAdCloseButtonSelector;
 	/** フロート広告クローズスクリプト */
 	protected String floatAdCloseScript;
-	/** 次へボタンがないとき待つ */
-	protected boolean toWaitWhenNextButtonNotFound;
+	/** アクションのたびに待つ */
+	protected boolean toWaitBeforeEveryAction;
 	/** 質問グループ属性 */
 	protected String questionGroupAttribute;
 	/** 質問グループ識別子 */
@@ -58,8 +58,8 @@ public abstract class EnqueteSite {
 	 * コンストラクタ
 	 */
 	public EnqueteSite() {
-		// 次へボタンがないとき待つ
-		this.toWaitWhenNextButtonNotFound = false;
+		// アクションのたびに待つ
+		this.toWaitBeforeEveryAction = false;
 	}
 
 	/**
@@ -202,10 +202,10 @@ public abstract class EnqueteSite {
 	}
 
 	/**
-	 * @return toWaitWhenNextButtonNotFound
+	 * @return toWaitBeforeEveryAction
 	 */
-	public boolean isToWaitWhenNextButtonNotFound() {
-		return toWaitWhenNextButtonNotFound;
+	public boolean isToWaitBeforeEveryAction() {
+		return toWaitBeforeEveryAction;
 	}
 
 	/**

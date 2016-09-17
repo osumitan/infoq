@@ -22,7 +22,7 @@ public class ShindanAppsSite extends EnqueteSite {
 		super.finalButtonSelector = super.finalTextPath;
 		// ラジオボタンセレクタ
 		super.radioButtonSelector = By.xpath("//div[not(contains(@class,'dia-invisible'))]/label[contains(@for,'rdo')]");
-		// 次へボタンがないとき待つ
-		this.toWaitWhenNextButtonNotFound = true;
+		// アクションのたびに待つ
+		this.toWaitBeforeEveryAction = true;
 	}
 }
