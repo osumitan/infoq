@@ -34,6 +34,7 @@ import jp.gr.java_conf.osumitan.infoq.site.ShinriCheckEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShopQPSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShoppingNowSite;
 import jp.gr.java_conf.osumitan.infoq.site.SurveyEnqueteSite;
+import jp.gr.java_conf.osumitan.infoq.site.TsukulinkSite;
 import jp.gr.java_conf.osumitan.infoq.site.VoteMediaSite;
 
 /**

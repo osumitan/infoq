@@ -21,9 +21,9 @@ public class ShopQPSite extends EnqueteSite {
 		// 最終ボタンセレクタ
 		super.finalButtonSelector = super.nextButtonSelector;
 		// ラジオボタンセレクタ
-		super.radioButtonSelector = By.cssSelector("label[for^='q']");
+		super.radioButtonSelector = By.xpath("//input[@type='radio']/ancestor::label[contains(@for,'q')]");
 		// チェックボックスセレクタ
-		super.checkBoxSelector = By.cssSelector("label[for^='q']");
+		super.checkBoxSelector = By.xpath("//input[@type='checkbox']/ancestor::label[contains(@for,'q')]");
 		// オプションセレクタ
 		super.optionSelector = By.cssSelector("select[name^='q'] option");
 		// 性別質問パス

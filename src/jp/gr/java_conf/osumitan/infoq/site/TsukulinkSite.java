@@ -1,8 +1,6 @@
-package jp.gr.java_conf.osumitan.infoq.host;
+package jp.gr.java_conf.osumitan.infoq.site;
 
 import org.openqa.selenium.By;
-
-import jp.gr.java_conf.osumitan.infoq.site.EnqueteSite;
 
 /**
  * アンケートサイト：tsukulink.jp
