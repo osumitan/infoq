@@ -22,6 +22,8 @@ public class QzooHost extends Host {
 	private static final By LOGIN_BUTTON_SELECTOR = By.cssSelector("input[alt='ログインする']");
 	/** アンケートリンクパス */
 	private static final By ENQUETE_LINK_PATH = By.xpath("//td[contains(text(),'他社：【広告付】') or contains(text(),'【広告付き】')]/ancestor::tr//img[@alt='回答する']//ancestor::a");
+	/** アンケートユニークキーパス */
+	private static final By ENQUETE_LINK_ATTRIBUTE = By.xpath("ancestor::tr/td[@class='lft']");
 	/** 完了クローズボタンセレクタ */
 	private static final By COMPLETE_CLOSE_BUTTON_SELECTOR = By.xpath("//input[contains(@class,'btn_close')]");
 	/** 更新リンクパス */
@@ -49,6 +51,8 @@ public class QzooHost extends Host {
 		super.loginButtonSelector = LOGIN_BUTTON_SELECTOR;
 		// アンケートリンクパス
 		super.enqueteLinkPath = ENQUETE_LINK_PATH;
+		// アンケートユニークキーパス
+		super.enqueteUniqueKeyPath = ENQUETE_LINK_ATTRIBUTE;
 		// 完了クローズボタンセレクタ
 		super.completeCloseButtonSelector = COMPLETE_CLOSE_BUTTON_SELECTOR;
 		// 更新リンクパス

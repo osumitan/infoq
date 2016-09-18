@@ -44,7 +44,9 @@ public class AdSurveySite extends EnqueteSite {
 		super.jobQuestionPath = By.xpath("//h2[contains(text(),'あなたのご職業をお知らせください。')]");
 		// 職業回答パス
 		super.jobAnswerPath = By.xpath("//label[text()='会社員（契約・派遣社員含む）']/preceding-sibling::input[1]");
+		// アクションのたびに待つ
+		this.toWaitBeforeEveryAction = true;
 		// ブラックアンケートパス
-		super.blackEnquetePath = By.xpath("//*[contains(text(),'アンケートは見つかりませんでした')]");
+		super.blackEnquetePath = By.xpath("//*[contains(text(),'アンケートは見つかりませんでした') or contains(text(),'アンケートに回答済みです。')]");
 	}
 }

@@ -22,6 +22,8 @@ public class InfoQHost extends Host {
 	private static final By LOGIN_BUTTON_SELECTOR = By.cssSelector(".btn_login_ssl");
 	/** アンケートリンクパス */
 	private static final By ENQUETE_LINK_PATH = By.xpath("//strong[text()='毎日たまる']//ancestor::div[@id='enquete_mypage_section']//img[contains(@src,'mtop_i_stus01.gif')]/ancestor::a");
+	/** アンケートユニークキーパス */
+	private static final By ENQUETE_LINK_ATTRIBUTE = By.xpath("ancestor::tr/td[@class='pic']");
 	/** おまけ回答ボタンセレクタ */
 	private static final By APPEND_ANSWER_BUTTON_SELECTOR = By.cssSelector("button#button_answer");
 	/** おまけラジオボタンセレクタ */
@@ -57,6 +59,8 @@ public class InfoQHost extends Host {
 		super.loginButtonSelector = LOGIN_BUTTON_SELECTOR;
 		// アンケートリンクパス
 		super.enqueteLinkPath = ENQUETE_LINK_PATH;
+		// アンケートユニークキーパス
+		super.enqueteUniqueKeyPath = ENQUETE_LINK_ATTRIBUTE;
 		// おまけ回答ボタンセレクタ
 		super.appendAnswerButtonSelector = APPEND_ANSWER_BUTTON_SELECTOR;
 		// おまけラジオボタンセレクタ

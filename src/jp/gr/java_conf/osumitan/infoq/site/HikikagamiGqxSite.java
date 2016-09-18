@@ -3,17 +3,17 @@ package jp.gr.java_conf.osumitan.infoq.site;
 import org.openqa.selenium.By;
 
 /**
- * アンケートサイト：hikikagami.com
+ * アンケートサイト：gqx.hikikagami.com
  */
-public class HikikagamiSite extends EnqueteSite {
+public class HikikagamiGqxSite extends EnqueteSite {
 
 	/**
 	 * コンストラクタ
 	 */
-	public HikikagamiSite() {
+	public HikikagamiGqxSite() {
 		super();
 		// ドメイン
-		super.domain = "hikikagami.com";
+		super.domain = "gqx.hikikagami.com";
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.cssSelector("button.next_btn");
 		// 最終テキストパス

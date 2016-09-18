@@ -23,7 +23,8 @@ import jp.gr.java_conf.osumitan.infoq.site.AdResearchSite;
 import jp.gr.java_conf.osumitan.infoq.site.AdSurveySite;
 import jp.gr.java_conf.osumitan.infoq.site.ColumnEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.EnqueteSite;
-import jp.gr.java_conf.osumitan.infoq.site.HikikagamiSite;
+import jp.gr.java_conf.osumitan.infoq.site.HikikagamiGqxSite;
+import jp.gr.java_conf.osumitan.infoq.site.HikikagamiR8Site;
 import jp.gr.java_conf.osumitan.infoq.site.InfoPanelSite;
 import jp.gr.java_conf.osumitan.infoq.site.KotsutaSite;
 import jp.gr.java_conf.osumitan.infoq.site.MangaEnqueteSite;
@@ -74,6 +75,8 @@ public abstract class Host {
 	protected By loginButtonSelector;
 	/** アンケートリンクパス */
 	protected By enqueteLinkPath;
+	/** アンケートユニークキーパス */
+	protected By enqueteUniqueKeyPath;
 	/** おまけ回答ボタンセレクタ */
 	protected By appendAnswerButtonSelector;
 	/** おまけラジオボタンセレクタ */
@@ -107,7 +110,8 @@ public abstract class Host {
 				new MangaEnqueteSite(),
 				new QuizSite(),
 				new InfoPanelSite(),
-				new HikikagamiSite(),
+				new HikikagamiR8Site(),
+				new HikikagamiGqxSite(),
 				new ShinriCheckEnqueteSite(),
 				new AdSurveySite(),
 				new KotsutaSite(),
@@ -178,8 +182,8 @@ public abstract class Host {
 	 * @param アンケートリンク
 	 */
 	private void enquete(WebElement enqueteLink) {
-		// アンケートテキストを退避
-		String enquateText = enqueteLink.getAttribute("onclick");
+		// アンケートユニークキーを退避
+		String uniqueKey = enqueteLink.findElement(this.enqueteUniqueKeyPath).getText();
 		// アンケートリンクをクリック
 		click(enqueteLink);
 		// アンケートウィンドウにスイッチ
@@ -193,7 +197,7 @@ public abstract class Host {
 		if(exists(this.currentSite.getBlackEnquetePath())
 				|| !exists(this.currentSite.getNextButtonSelector())) {
 			// ブラックリストに追加
-			this.blackList.add(enquateText);
+			this.blackList.add(uniqueKey);
 			// ウィンドウを閉じる
 			this.driver.close();
 			// 	メインウィンドウにスイッチ
@@ -340,8 +344,8 @@ public abstract class Host {
 	 */
 	private WebElement findNextEnqueteLink() {
 		for(WebElement element : findElements(this.enqueteLinkPath)) {
-			String text = element.getAttribute("onclick");
-			if(!this.blackList.contains(text)) {
+			String uniqueKey = element.findElement(this.enqueteUniqueKeyPath).getText();
+			if(!this.blackList.contains(uniqueKey)) {
 				return element;
 			}
 		}
