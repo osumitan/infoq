@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -9,6 +11,8 @@ public abstract class EnqueteSite {
 
 	/** ドメイン */
 	protected String domain;
+	/** ドメインパターン */
+	protected Pattern domainPattern;
 	/** IFRAMEセレクタ */
 	protected By iframeSelector;
 	/** 次へボタンセレクタ */
@@ -67,6 +71,13 @@ public abstract class EnqueteSite {
 	 */
 	public String getDomain() {
 		return domain;
+	}
+
+	/**
+	 * @return domainPattern
+	 */
+	public Pattern getDomainPattern() {
+		return domainPattern;
 	}
 
 	/**

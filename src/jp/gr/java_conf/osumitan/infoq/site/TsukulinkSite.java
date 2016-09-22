@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class TsukulinkSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "tsukulink.jp";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*tsukulink\\.jp.*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.cssSelector("button.next_btn");
 		// 最終テキストパス

@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class ShinriCheckEnqueteSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "shinricheck-enquete.net";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*shinricheck-enquete\\.net.*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//input[@type='submit' or @type='image']");
 		// 最終テキストパス

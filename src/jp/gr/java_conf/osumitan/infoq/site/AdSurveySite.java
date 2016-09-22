@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class AdSurveySite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "adsurvey.media-ad.jp";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*adsurvey\\.media-ad\\.jp.*$");
 		// IFRAMEセレクタ
 		super.iframeSelector = By.cssSelector("iframe.question_frame");
 		// 次へボタンセレクタ

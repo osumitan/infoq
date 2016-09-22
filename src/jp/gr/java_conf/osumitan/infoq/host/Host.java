@@ -331,7 +331,7 @@ public abstract class Host {
 		// ドメインから判断
 		String url = this.driver.getCurrentUrl();
 		for(EnqueteSite site : this.siteList) {
-			if(url.contains(site.getDomain())) {
+			if(site.getDomainPattern().matcher(url).matches()) {
 				return site;
 			}
 		}

@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class ShoppingNowSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "shopping-now.jp";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*shopping-now\\.jp.*$");
 		// IFRAMEセレクタ
 		super.iframeSelector = By.cssSelector("iframe#iframe");
 		// 次へボタンセレクタ

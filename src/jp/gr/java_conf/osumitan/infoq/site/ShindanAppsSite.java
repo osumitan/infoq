@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class ShindanAppsSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "shindan-apps.net";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*shindan-apps\\.net.*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//a[not(contains(@style,'none')) and (text()='　次へ　' or text()='　終了　')]");
 		// 最終テキストパス

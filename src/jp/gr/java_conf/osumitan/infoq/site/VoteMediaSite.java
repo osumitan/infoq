@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class VoteMediaSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "vote.media-ad.jp";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*vote\\.media-ad\\.jp.*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//*[contains(@class,'start__button') or contains(@class,'button--answer')]");
 		// 最終テキストパス

@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class SurveyEnqueteSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "mini.surveyenquete.net";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*mini\\.surveyenquete\\.net.*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//button[contains(text(),'次へ進む')]");
 		// 最終テキストパス

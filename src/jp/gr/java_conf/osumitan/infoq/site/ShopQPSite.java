@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class ShopQPSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "enq.shop-qp.com";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*enq\\.shop-qp\\.com.*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//*[@id='btnlarge' or contains(@class,'adnextbtn')]");
 		// 最終テキストパス

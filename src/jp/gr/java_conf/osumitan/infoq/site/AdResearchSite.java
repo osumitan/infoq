@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class AdResearchSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "ad-research.jp";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*.*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.cssSelector(".ui-button");
 		// 最終テキストパス

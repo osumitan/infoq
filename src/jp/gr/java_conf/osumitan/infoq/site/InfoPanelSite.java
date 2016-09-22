@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -17,6 +19,8 @@ public class InfoPanelSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = DOMAIN;
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*infopanel\\.jp.*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//input[contains(@class,'btn_next') or contains(@class,'btn_submit')]");
 		// 最終テキストパス

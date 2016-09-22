@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class SaveUpSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "saveup.jp";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*saveup\\.jp.*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.cssSelector("input.btn-next");
 		// 最終テキストパス

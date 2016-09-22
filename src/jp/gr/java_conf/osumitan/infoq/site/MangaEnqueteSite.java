@@ -1,5 +1,7 @@
 package jp.gr.java_conf.osumitan.infoq.site;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 /**
@@ -14,6 +16,8 @@ public class MangaEnqueteSite extends EnqueteSite {
 		super();
 		// ドメイン
 		super.domain = "manga-enquete.com";
+		// ドメインパターン
+		super.domainPattern = Pattern.compile("^.*manga-enquete\\.com.*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//input[@type='submit' or @type='image']");
 		// 最終テキストパス
