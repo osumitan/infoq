@@ -38,6 +38,8 @@ public class ColumnEnqueteSite extends EnqueteSite {
 		super.ageQuestionPath = By.xpath("//*[contains(text(),'あなたの年齢をお知らせ下さい')]");
 		// 年齢回答パス
 		super.ageAnswerPath = By.xpath("//input[@type='radio' and @value='4']");
+		// アクションのたびに待つ
+		this.toWaitBeforeEveryAction = true;
 		// フロート広告クローズボタンセレクタ
 		super.floatAdCloseButtonSelector = By.cssSelector("#inter-close");
 		// フロート広告クローズスクリプト

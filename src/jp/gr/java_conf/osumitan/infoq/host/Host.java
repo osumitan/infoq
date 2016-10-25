@@ -28,6 +28,7 @@ import jp.gr.java_conf.osumitan.infoq.site.HikikagamiR8Site;
 import jp.gr.java_conf.osumitan.infoq.site.InfoPanelSite;
 import jp.gr.java_conf.osumitan.infoq.site.KotsutaSite;
 import jp.gr.java_conf.osumitan.infoq.site.MangaEnqueteSite;
+import jp.gr.java_conf.osumitan.infoq.site.PhotoEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.QuizSite;
 import jp.gr.java_conf.osumitan.infoq.site.SaveUpSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShindanAppsSite;
@@ -121,7 +122,8 @@ public abstract class Host {
 				new ColumnEnqueteSite(),
 				new VoteMediaSite(),
 				new AdResearchSite(),
-				new TsukulinkSite());
+				new TsukulinkSite(),
+				new PhotoEnqueteSite());
 	}
 
 	/**
@@ -212,6 +214,13 @@ public abstract class Host {
 			// サイト取得（infopanelの場合）
 			if(InfoPanelSite.DOMAIN.equals(this.currentSite.getDomain())) {
 				this.currentSite = getEnqueteSite();
+			}
+			// ドメインが変わったらアクション
+			else if(this.currentSite.isCheckDomainChanged()) {
+				if(!this.currentSite.getDomainPattern().matcher(this.driver.getCurrentUrl()).matches()) {
+					this.driver.executeScript(this.currentSite.getDomainChangedScript());
+					continue;
+				}
 			}
 			// ラジオボタンを選択
 			selectRadioButton();
@@ -512,7 +521,12 @@ public abstract class Host {
 		boolean b = false;
 		while(!b) {
 			try {
-				element.click();
+				// 選択済みのチェックボックスはクリック
+				if(!"input".equalsIgnoreCase(element.getTagName()) ||
+						!"checkbox".equalsIgnoreCase(element.getAttribute("type")) ||
+						!element.isSelected()) {
+					element.click();
+				}
 				b = true;
 			} catch(TimeoutException e) {
 				// タイムアウト時は無視

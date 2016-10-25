@@ -53,6 +53,10 @@ public abstract class EnqueteSite {
 	protected String floatAdCloseScript;
 	/** アクションのたびに待つ */
 	protected boolean toWaitBeforeEveryAction;
+	/** ドメインが変わるかチェック */
+	protected boolean checkDomainChanged;
+	/** ドメインが変わったときのスクリプト */
+	protected String domainChangedScript;
 	/** 質問グループ属性 */
 	protected String questionGroupAttribute;
 	/** 質問グループ識別子 */
@@ -64,6 +68,8 @@ public abstract class EnqueteSite {
 	public EnqueteSite() {
 		// アクションのたびに待つ
 		this.toWaitBeforeEveryAction = false;
+		// ドメインが変わるかチェック
+		this.checkDomainChanged = false;
 	}
 
 	/**
@@ -217,6 +223,20 @@ public abstract class EnqueteSite {
 	 */
 	public boolean isToWaitBeforeEveryAction() {
 		return toWaitBeforeEveryAction;
+	}
+
+	/**
+	 * @return checkDomainChanged
+	 */
+	public boolean isCheckDomainChanged() {
+		return checkDomainChanged;
+	}
+
+	/**
+	 * @return domainChangedScript
+	 */
+	public String getDomainChangedScript() {
+		return domainChangedScript;
 	}
 
 	/**
