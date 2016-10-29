@@ -61,7 +61,7 @@ public abstract class Host {
 	protected List<String> blackList;
 
 	/** ログイン前ポーズ要否 */
-	protected boolean neesPreLoginPause;
+	protected boolean needsPreLoginPause;
 	/** ログインページURL */
 	protected String loginUrl;
 	/** ログインメールアドレスセレクタ */
@@ -101,7 +101,7 @@ public abstract class Host {
 		// ドライバ
 		this.driver = driver;
 		// ログイン前ポーズ要否
-		this.neesPreLoginPause = false;
+		this.needsPreLoginPause = false;
 		// ブラックリスト
 		this.blackList = new ArrayList<String>();
 		// サイトリスト
@@ -155,7 +155,7 @@ public abstract class Host {
 		// パスワード
 		setValue(this.loginPasswordSelector, this.loginPassword);
 		// ログイン前ポーズ要否
-		if(this.neesPreLoginPause) {
+		if(this.needsPreLoginPause) {
 			try {
 				System.out.println("★★★ ログイン準備ができたらEnter押下 ★★★");
 				new BufferedReader(new InputStreamReader(System.in)).readLine();
@@ -192,6 +192,19 @@ public abstract class Host {
 		switchToSubWindow(true);
 		// サイト取得
 		this.currentSite = getEnqueteSite();
+		// 未知のサイトならブラックリストに追加して中断
+		if(this.currentSite == null) {
+			// ブラックリストに追加
+			this.blackList.add(uniqueKey);
+			// ウィンドウを閉じる
+			this.driver.close();
+			// 	メインウィンドウにスイッチ
+			switchToMainWindow();
+			// 一覧を更新
+			click(this.refreshLinkPath);
+			// 広告処理中断
+			return;
+		}
 		// IFRAMEにスイッチ
 		switchToIframe();
 		// ブラックアンケートを確認
@@ -214,6 +227,19 @@ public abstract class Host {
 			// サイト取得（infopanelの場合）
 			if(InfoPanelSite.DOMAIN.equals(this.currentSite.getDomain())) {
 				this.currentSite = getEnqueteSite();
+				// 未知のサイトならブラックリストに追加して中断
+				if(this.currentSite == null) {
+					// ブラックリストに追加
+					this.blackList.add(uniqueKey);
+					// ウィンドウを閉じる
+					this.driver.close();
+					// 	メインウィンドウにスイッチ
+					switchToMainWindow();
+					// 一覧を更新
+					click(this.refreshLinkPath);
+					// 広告処理中断
+					return;
+				}
 			}
 			// ドメインが変わったらアクション
 			else if(this.currentSite.isCheckDomainChanged()) {
@@ -344,7 +370,8 @@ public abstract class Host {
 				return site;
 			}
 		}
-		throw new RuntimeException("未知のサイトです。" + url);
+		System.out.println("未知のサイトです。" + url);
+		return null;
 	}
 
 	/**

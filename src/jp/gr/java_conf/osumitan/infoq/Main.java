@@ -52,7 +52,9 @@ public class Main {
 		// ホスト分ループ
 		for(Function<RemoteWebDriver, Host> constructor : this.hostList) {
 			Host host = constructor.apply(driver);
+			System.out.println(host.getClass().getName() + ":start");
 			host.start();
+			System.out.println(host.getClass().getName() + ":end");
 		}
 		// ウィンドウを閉じる
 		driver.quit();

@@ -44,7 +44,7 @@ public class InfoQHost extends Host {
 	public InfoQHost(RemoteWebDriver driver) {
 		super(driver);
 		// ログイン前ポーズ要否
-		this.neesPreLoginPause = true;
+		this.needsPreLoginPause = false;
 		// ログインページURL
 		super.loginUrl = LOGIN_URL;
 		// ログインメールアドレスセレクタ
