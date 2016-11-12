@@ -28,6 +28,7 @@ import jp.gr.java_conf.osumitan.infoq.site.HikikagamiR8Site;
 import jp.gr.java_conf.osumitan.infoq.site.InfoPanelSite;
 import jp.gr.java_conf.osumitan.infoq.site.KotsutaSite;
 import jp.gr.java_conf.osumitan.infoq.site.MangaEnqueteSite;
+import jp.gr.java_conf.osumitan.infoq.site.NResearchSite;
 import jp.gr.java_conf.osumitan.infoq.site.PhotoEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.QuizSite;
 import jp.gr.java_conf.osumitan.infoq.site.SaveUpSite;
@@ -123,7 +124,8 @@ public abstract class Host {
 				new VoteMediaSite(),
 				new AdResearchSite(),
 				new TsukulinkSite(),
-				new PhotoEnqueteSite());
+				new PhotoEnqueteSite(),
+				new NResearchSite());
 	}
 
 	/**
@@ -210,7 +212,8 @@ public abstract class Host {
 		// ブラックアンケートを確認
 		// （いきなり次へボタンがない場合も同様）
 		if(exists(this.currentSite.getBlackEnquetePath())
-				|| !exists(this.currentSite.getNextButtonSelector())) {
+				|| !exists(this.currentSite.getStartButtonSelector())
+				&& !exists(this.currentSite.getNextButtonSelector())) {
 			// ブラックリストに追加
 			this.blackList.add(uniqueKey);
 			// ウィンドウを閉じる
@@ -221,6 +224,11 @@ public abstract class Host {
 			click(this.refreshLinkPath);
 			// 広告処理中断
 			return;
+		}
+		// スタートボタン
+		if(exists(this.currentSite.getStartButtonSelector())) {
+			// スタートボタン押下
+			click(this.currentSite.getStartButtonSelector());
 		}
 		// 最終テキストが出るまで
 		while(!existsFinalText()) {

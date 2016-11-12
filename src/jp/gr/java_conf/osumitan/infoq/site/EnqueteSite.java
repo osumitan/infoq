@@ -15,6 +15,8 @@ public abstract class EnqueteSite {
 	protected Pattern domainPattern;
 	/** IFRAMEセレクタ */
 	protected By iframeSelector;
+	/** スタートボタンセレクタ */
+	protected By startButtonSelector;
 	/** 次へボタンセレクタ */
 	protected By nextButtonSelector;
 	/** 最終テキストパス */
@@ -98,6 +100,13 @@ public abstract class EnqueteSite {
 	 */
 	public By getNextButtonSelector() {
 		return nextButtonSelector;
+	}
+
+	/**
+	 * @return startButtonSelector
+	 */
+	public By getStartButtonSelector() {
+		return startButtonSelector;
 	}
 
 	/**
