@@ -534,6 +534,9 @@ public abstract class Host {
 			} catch(StaleElementReferenceException e) {
 				// リトライ
 				sleep(ERROR_WAIT_INTERVAL);
+			} catch(TimeoutException e) {
+				// リトライ
+				sleep(ERROR_WAIT_INTERVAL);
 			}
 		}
 	}

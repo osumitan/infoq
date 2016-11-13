@@ -2,6 +2,7 @@ package jp.gr.java_conf.osumitan.infoq;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -71,6 +72,7 @@ public class Main {
 		RemoteWebDriver driver = new ChromeDriver();
 		driver.manage().window().setSize(new Dimension(800, 600));
 		driver.manage().window().setPosition(new Point(520, 120));
+		driver.manage().timeouts().pageLoadTimeout(1L, TimeUnit.MINUTES);
 		return driver;
 	}
 }
