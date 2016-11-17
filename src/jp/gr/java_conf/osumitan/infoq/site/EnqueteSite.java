@@ -9,6 +9,9 @@ import org.openqa.selenium.By;
  */
 public abstract class EnqueteSite {
 
+	/** アクションのたびに待つ時間 */
+	private static final long DEFAULT_TO_WAIT_BEFORE_EVERY_ACTION_TIME = 1000L;
+
 	/** ドメイン */
 	protected String domain;
 	/** ドメインパターン */
@@ -55,6 +58,8 @@ public abstract class EnqueteSite {
 	protected String floatAdCloseScript;
 	/** アクションのたびに待つ */
 	protected boolean toWaitBeforeEveryAction;
+	/** アクションのたびに待つ時間 */
+	protected long toWaitBeforeEveryActionTime;
 	/** ドメインが変わるかチェック */
 	protected boolean checkDomainChanged;
 	/** ドメインが変わったときのスクリプト */
@@ -70,6 +75,8 @@ public abstract class EnqueteSite {
 	public EnqueteSite() {
 		// アクションのたびに待つ
 		this.toWaitBeforeEveryAction = false;
+		// アクションのたびに待つ時間
+		this.toWaitBeforeEveryActionTime = DEFAULT_TO_WAIT_BEFORE_EVERY_ACTION_TIME;
 		// ドメインが変わるかチェック
 		this.checkDomainChanged = false;
 	}
@@ -232,6 +239,13 @@ public abstract class EnqueteSite {
 	 */
 	public boolean isToWaitBeforeEveryAction() {
 		return toWaitBeforeEveryAction;
+	}
+
+	/**
+	 * @return toWaitBeforeEveryActionTime
+	 */
+	public long getToWaitBeforeEveryActionTime() {
+		return toWaitBeforeEveryActionTime;
 	}
 
 	/**

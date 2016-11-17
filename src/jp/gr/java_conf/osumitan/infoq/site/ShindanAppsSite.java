@@ -28,5 +28,7 @@ public class ShindanAppsSite extends EnqueteSite {
 		super.radioButtonSelector = By.xpath("//div[not(contains(@class,'dia-invisible'))]/label[contains(@for,'rdo')]");
 		// アクションのたびに待つ
 		this.toWaitBeforeEveryAction = true;
+		// アクションのたびに待つ時間
+		this.toWaitBeforeEveryActionTime = 3000L;
 	}
 }
