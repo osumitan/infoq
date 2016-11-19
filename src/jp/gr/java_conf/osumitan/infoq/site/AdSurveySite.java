@@ -20,6 +20,8 @@ public class AdSurveySite extends EnqueteSite {
 		super.domainPattern = Pattern.compile("^.*adsurvey\\.media-ad\\.jp.*$");
 		// IFRAMEセレクタ
 		super.iframeSelector = By.cssSelector("iframe.question_frame");
+		// スタートボタンセレクタ
+		super.startButtonSelector = By.cssSelector("div.btn_next input.btn_regular");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.cssSelector("div.btn_next input.btn");
 		// 最終テキストパス
