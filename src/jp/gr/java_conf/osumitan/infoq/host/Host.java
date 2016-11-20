@@ -31,6 +31,7 @@ import jp.gr.java_conf.osumitan.infoq.site.MangaEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.NResearchSite;
 import jp.gr.java_conf.osumitan.infoq.site.PhotoEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.QuizSite;
+import jp.gr.java_conf.osumitan.infoq.site.ResearchECNaviSite;
 import jp.gr.java_conf.osumitan.infoq.site.SaveUpSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShindanAppsSite;
 import jp.gr.java_conf.osumitan.infoq.site.ShinriCheckEnqueteSite;
@@ -125,7 +126,8 @@ public abstract class Host {
 				new AdResearchSite(),
 				new TsukulinkSite(),
 				new PhotoEnqueteSite(),
-				new NResearchSite());
+				new NResearchSite(),
+				new ResearchECNaviSite());
 	}
 
 	/**
@@ -152,21 +154,24 @@ public abstract class Host {
 		navigate(this.loginUrl);
 		// メインウィンドウハンドルを取得
 		this.mainHandle = this.driver.getWindowHandle();
-		// メールアドレス
-		setValue(this.loginMailSelector, this.loginMailAddress);
-		// パスワード
-		setValue(this.loginPasswordSelector, this.loginPassword);
-		// ログイン前ポーズ要否
-		if(this.needsPreLoginPause) {
-			try {
-				System.out.println("★★★ ログイン準備ができたらEnter押下 ★★★");
-				new BufferedReader(new InputStreamReader(System.in)).readLine();
-			} catch(IOException e) {
-				e.printStackTrace();
+		// ログインフォームがあるとき
+		if(exists(this.loginMailSelector) && exists(this.loginPasswordSelector)) {
+			// メールアドレス
+			setValue(this.loginMailSelector, this.loginMailAddress);
+			// パスワード
+			setValue(this.loginPasswordSelector, this.loginPassword);
+			// ログイン前ポーズ要否
+			if(this.needsPreLoginPause) {
+				try {
+					System.out.println("★★★ ログイン準備ができたらEnter押下 ★★★");
+					new BufferedReader(new InputStreamReader(System.in)).readLine();
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
 			}
+			// ログインボタン押下
+			click(this.loginButtonSelector);
 		}
-		// ログインボタン押下
-		click(this.loginButtonSelector);
 	}
 
 	/**
@@ -256,16 +261,8 @@ public abstract class Host {
 					continue;
 				}
 			}
-			// ラジオボタンを選択
-			selectRadioButton();
-			// チェックボックスを選択
-			selectCheckBox();
-			// プルダウンを選択
-			selectPullDown();
-			// テキストエリアに入力
-			inputTextArea();
-			// 特殊質問に回答
-			answerSpecialQuestion();
+			// 質問に回答
+			answerQuestion();
 			// 次へボタン
 			if(exists(this.currentSite.getNextButtonSelector())) {
 				// 次へボタン押下
@@ -280,6 +277,10 @@ public abstract class Host {
 				// 広告処理中断
 				return;
 			}
+		}
+		// 最終質問に回答
+		if(this.currentSite.isHasFinalQuestion()) {
+			answerQuestion();
 		}
 		// 最終ボタン押下
 		if(exists(this.currentSite.getFinalButtonSelector())) {
@@ -301,7 +302,7 @@ public abstract class Host {
 			this.driver.close();
 			// 完了ウィンドウにスイッチ
 			String cmpHandle = switchToSubWindow(false);
-			if(cmpHandle != null) {
+			if(cmpHandle != null && exists(this.completeCloseButtonSelector)) {
 				// 完了クローズボタン押下
 				click(this.completeCloseButtonSelector);
 			}
@@ -394,6 +395,26 @@ public abstract class Host {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 質問に回答
+	 */
+	private void answerQuestion() {
+		// クリック広告リンクを開く
+		if(exists(this.currentSite.getClickAdLinkSelector())) {
+			click(this.currentSite.getClickAdLinkSelector());
+		}
+		// ラジオボタンを選択
+		selectRadioButton();
+		// チェックボックスを選択
+		selectCheckBox();
+		// プルダウンを選択
+		selectPullDown();
+		// テキストエリアに入力
+		inputTextArea();
+		// 特殊質問に回答
+		answerSpecialQuestion();
 	}
 
 	/**

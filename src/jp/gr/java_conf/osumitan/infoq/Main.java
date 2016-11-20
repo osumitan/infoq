@@ -12,6 +12,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.google.common.base.Function;
 
+import jp.gr.java_conf.osumitan.infoq.host.ECNaviHost;
 import jp.gr.java_conf.osumitan.infoq.host.Host;
 import jp.gr.java_conf.osumitan.infoq.host.InfoQHost;
 import jp.gr.java_conf.osumitan.infoq.host.QzooHost;
@@ -41,7 +42,8 @@ public class Main {
 	 */
 	public Main() {
 		// ホストリスト
-		this.hostList = Arrays.asList(InfoQHost::new, QzooHost::new);
+//		this.hostList = Arrays.asList(InfoQHost::new, QzooHost::new);
+		this.hostList = Arrays.asList(ECNaviHost::new, QzooHost::new, InfoQHost::new);
 	}
 
 	/**

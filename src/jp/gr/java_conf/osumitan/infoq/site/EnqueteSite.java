@@ -26,6 +26,8 @@ public abstract class EnqueteSite {
 	protected By finalTextPath;
 	/** 最終ボタンセレクタ */
 	protected By finalButtonSelector;
+	/** 最終質問あり */
+	protected boolean hasFinalQuestion;
 	/** ラジオボタンセレクタ */
 	protected By radioButtonSelector;
 	/** チェックボックスセレクタ */
@@ -50,6 +52,8 @@ public abstract class EnqueteSite {
 	protected By jobQuestionPath;
 	/** 職業回答パス */
 	protected By jobAnswerPath;
+	/** クリック広告リンクセレクタ */
+	protected By clickAdLinkSelector;
 	/** ブラックアンケートパス */
 	protected By blackEnquetePath;
 	/** フロート広告クローズボタンセレクタ */
@@ -128,6 +132,13 @@ public abstract class EnqueteSite {
 	 */
 	public By getFinalButtonSelector() {
 		return finalButtonSelector;
+	}
+
+	/**
+	 * @return hasFinalQuestion
+	 */
+	public boolean isHasFinalQuestion() {
+		return hasFinalQuestion;
 	}
 
 	/**
@@ -211,6 +222,13 @@ public abstract class EnqueteSite {
 	 */
 	public By getJobAnswerPath() {
 		return jobAnswerPath;
+	}
+
+	/**
+	 * @return clickAdLinkSelector
+	 */
+	public By getClickAdLinkSelector() {
+		return clickAdLinkSelector;
 	}
 
 	/**
