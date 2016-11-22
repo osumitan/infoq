@@ -40,6 +40,7 @@ import jp.gr.java_conf.osumitan.infoq.site.ShoppingNowSite;
 import jp.gr.java_conf.osumitan.infoq.site.SurveyEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.TsukulinkSite;
 import jp.gr.java_conf.osumitan.infoq.site.VoteMediaSite;
+import jp.gr.java_conf.osumitan.infoq.site.Y2atSite;
 
 /**
  * ホストの基底クラス
@@ -127,13 +128,16 @@ public abstract class Host {
 				new TsukulinkSite(),
 				new PhotoEnqueteSite(),
 				new NResearchSite(),
-				new ResearchECNaviSite());
+				new ResearchECNaviSite(),
+				new Y2atSite());
 	}
 
 	/**
 	 * スタート
 	 */
 	public void start() {
+		// スキップ
+		if(skip()) return;
 		// ログイン
 		login();
 		// 未回答がなくなるまで
@@ -144,6 +148,20 @@ public abstract class Host {
 		}
 		// ログアウト
 		logout();
+	}
+
+	/**
+	 * スキップ
+	 * @return スキップするか否か
+	 */
+	private boolean skip() {
+		System.out.println("スキップするには s を入力");
+		try {
+			String s = new BufferedReader(new InputStreamReader(System.in)).readLine();
+			return s != null && s.startsWith("s");
+		} catch(IOException e) {
+			return false;
+		}
 	}
 
 	/**
