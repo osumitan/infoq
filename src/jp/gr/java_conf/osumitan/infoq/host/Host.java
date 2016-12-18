@@ -286,6 +286,9 @@ public abstract class Host {
 				// 次へボタン押下
 				click(this.currentSite.getNextButtonSelector());
 			} else {
+				// 最終テキストがないのに次へボタンもない
+				// ブラックリストに追加
+				this.blackList.add(uniqueKey);
 				// ウィンドウを閉じる
 				this.driver.close();
 				// 	メインウィンドウにスイッチ
@@ -533,7 +536,7 @@ public abstract class Host {
 	private boolean existsFinalText() {
 		// アクションのたびに待つ
 		if(this.currentSite.isToWaitBeforeEveryAction()) {
-			sleep(NORMAL_WAIT_INTERVAL);
+			sleep(this.currentSite.getToWaitBeforeEveryActionTime());
 		}
 		// フロート広告を閉じる
 		if(exists(this.currentSite.getFloatAdCloseButtonSelector())) {
