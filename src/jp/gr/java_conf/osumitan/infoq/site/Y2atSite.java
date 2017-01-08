@@ -46,5 +46,9 @@ public class Y2atSite extends EnqueteSite {
 		super.jobQuestionPath = By.xpath("//div[contains(text(),'あなたの職業をお知らせください。')]");
 		// 職業回答パス
 		super.jobAnswerPath = By.xpath("//label[starts-with(@for,'q') and text()='会社勤務（一般社員）']/ancestor::div/span/input[@type='radio']");
+		// フロート広告クローズボタンセレクタ
+		super.floatAdCloseButtonSelector = By.cssSelector("div.bnrclose");
+		// フロート広告クローズスクリプト
+		super.floatAdCloseScript = "$('div.bnrclose').click();";
 	}
 }
