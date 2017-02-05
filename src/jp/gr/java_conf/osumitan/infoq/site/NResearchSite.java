@@ -21,7 +21,7 @@ public class NResearchSite extends EnqueteSite {
 		// スタートボタンセレクタ
 		super.startButtonSelector = By.xpath("//input[@value='回答する']");
 		// 次へボタンセレクタ
-		super.nextButtonSelector = By.xpath("//p[(@class='top' or @class='btm') and contains(@style,'block')]/input");
+		super.nextButtonSelector = By.xpath("//p[@class='btm']/input");
 		// 最終テキストパス
 		super.finalTextPath = By.xpath("//div[@class='end_area']/p[contains(text(),'ご回答ありがとうございました。')]");
 		// 最終ボタンセレクタ
