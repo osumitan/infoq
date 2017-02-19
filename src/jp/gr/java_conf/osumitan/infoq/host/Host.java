@@ -17,6 +17,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import jp.gr.java_conf.osumitan.infoq.site.AdResearchSite;
@@ -605,6 +606,7 @@ public abstract class Host {
 				if(!"input".equalsIgnoreCase(element.getTagName()) ||
 						!"checkbox".equalsIgnoreCase(element.getAttribute("type")) ||
 						!element.isSelected()) {
+					new Actions(this.driver).moveToElement(element).perform();
 					element.click();
 				}
 				b = true;
