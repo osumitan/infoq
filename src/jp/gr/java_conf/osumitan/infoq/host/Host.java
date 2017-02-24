@@ -667,7 +667,8 @@ public abstract class Host {
 			}
 		}
 		for(List<WebElement> list : map.values()) {
-			Double index = Math.random() * list.size();
+			// 選択肢が3件以上なら一番下は選択しない（その他対策）
+			Double index = Math.random() * (list.size() - ((list.size() >= 3) ? 1 : 0));
 			click(list.get(index.intValue()));
 		}
 	}
