@@ -44,9 +44,5 @@ public class PhotoEnqueteSite extends EnqueteSite {
 		super.floatAdCloseScript = "document.getElementById('inter-close').click();";
 		// アクションのたびに待つ
 		this.toWaitBeforeEveryAction = true;
-		// ドメインが変わるかチェック
-		super.checkDomainChanged = true;
-		// ドメインが変わったときのスクリプト
-		super.domainChangedScript = "window.history.back();";
 	}
 }

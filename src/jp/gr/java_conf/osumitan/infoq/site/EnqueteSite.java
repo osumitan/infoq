@@ -64,10 +64,6 @@ public abstract class EnqueteSite {
 	protected boolean toWaitBeforeEveryAction;
 	/** アクションのたびに待つ時間 */
 	protected long toWaitBeforeEveryActionTime;
-	/** ドメインが変わるかチェック */
-	protected boolean checkDomainChanged;
-	/** ドメインが変わったときのスクリプト */
-	protected String domainChangedScript;
 	/** 質問グループ属性 */
 	protected String questionGroupAttribute;
 	/** 質問グループ識別子 */
@@ -81,8 +77,6 @@ public abstract class EnqueteSite {
 		this.toWaitBeforeEveryAction = false;
 		// アクションのたびに待つ時間
 		this.toWaitBeforeEveryActionTime = DEFAULT_TO_WAIT_BEFORE_EVERY_ACTION_TIME;
-		// ドメインが変わるかチェック
-		this.checkDomainChanged = false;
 	}
 
 	/**
@@ -264,20 +258,6 @@ public abstract class EnqueteSite {
 	 */
 	public long getToWaitBeforeEveryActionTime() {
 		return toWaitBeforeEveryActionTime;
-	}
-
-	/**
-	 * @return checkDomainChanged
-	 */
-	public boolean isCheckDomainChanged() {
-		return checkDomainChanged;
-	}
-
-	/**
-	 * @return domainChangedScript
-	 */
-	public String getDomainChangedScript() {
-		return domainChangedScript;
 	}
 
 	/**

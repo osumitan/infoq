@@ -25,9 +25,9 @@ public class ColumnEnqueteSite extends EnqueteSite {
 		// 最終ボタンセレクタ
 		super.finalButtonSelector = super.finalTextPath;
 		// ラジオボタンセレクタ
-		super.radioButtonSelector = By.cssSelector("input[type='radio']");
+		super.radioButtonSelector = By.cssSelector("input[type='radio'][id^='que']");
 		// チェックボックスセレクタ
-		super.checkBoxSelector = By.cssSelector("input[type='checkbox']");
+		super.checkBoxSelector = By.cssSelector("input[type='checkbox'][id^='que']");
 		// オプションセレクタ
 		super.optionSelector = By.cssSelector("select option");
 		// 性別質問パス

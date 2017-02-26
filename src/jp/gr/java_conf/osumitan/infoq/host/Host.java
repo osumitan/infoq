@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -92,6 +93,8 @@ public abstract class Host {
 	protected By completeCloseButtonSelector;
 	/** 更新リンクパス */
 	protected By refreshLinkPath;
+	/** 更新後スクリプト */
+	protected String afterRefreshScript;
 	/** ログアウトリンクセレクタ */
 	protected By logoutLinkSelector;
 	/** ログアウトフォームセレクタ */
@@ -172,25 +175,24 @@ public abstract class Host {
 		// トップページを開く
 		navigate(this.loginUrl);
 		// メインウィンドウハンドルを取得
-		this.mainHandle = this.driver.getWindowHandle();
-		// ログインフォームがあるとき
-		if(exists(this.loginMailSelector) && exists(this.loginPasswordSelector)) {
-			// メールアドレス
-			setValue(this.loginMailSelector, this.loginMailAddress);
-			// パスワード
-			setValue(this.loginPasswordSelector, this.loginPassword);
-			// ログイン前ポーズ要否
-			if(this.needsPreLoginPause) {
-				try {
-					System.out.println("★★★ ログイン準備ができたらEnter押下 ★★★");
-					new BufferedReader(new InputStreamReader(System.in)).readLine();
-				} catch(IOException e) {
-					e.printStackTrace();
-				}
+		this.mainHandle = get(this.driver::getWindowHandle);
+		// メールアドレス
+		setValue(this.loginMailSelector, this.loginMailAddress);
+		// パスワード
+		setValue(this.loginPasswordSelector, this.loginPassword);
+		// ログイン前ポーズ要否
+		if(this.needsPreLoginPause) {
+			try {
+				System.out.println("★★★ ログイン準備ができたらEnter押下 ★★★");
+				new BufferedReader(new InputStreamReader(System.in)).readLine();
+			} catch(IOException e) {
+				e.printStackTrace();
 			}
-			// ログインボタン押下
-			click(this.loginButtonSelector);
 		}
+		// ログインボタン押下
+		click(this.loginButtonSelector);
+		// 更新後スクリプト実行
+		executeScript(this.afterRefreshScript);
 	}
 
 	/**
@@ -198,10 +200,8 @@ public abstract class Host {
 	 */
 	private void logout() {
 		// ログアウト
-		if(exists(this.logoutLinkSelector)) {
-			findElement(this.logoutLinkSelector).click();
-		} else if(exists(this.logoutFormSelector)) {
-			findElement(this.logoutFormSelector).submit();
+		if(!click(this.logoutLinkSelector)) {
+			submit(this.logoutFormSelector);
 		}
 	}
 
@@ -211,7 +211,7 @@ public abstract class Host {
 	 */
 	private void enquete(WebElement enqueteLink) {
 		// アンケートユニークキーを退避
-		String uniqueKey = enqueteLink.findElement(this.enqueteUniqueKeyPath).getText();
+		String uniqueKey = get(findElement(enqueteLink, this.enqueteUniqueKeyPath)::getText);
 		// アンケートリンクをクリック
 		click(enqueteLink);
 		// アンケートウィンドウにスイッチ
@@ -223,7 +223,7 @@ public abstract class Host {
 			// ブラックリストに追加
 			this.blackList.add(uniqueKey);
 			// ウィンドウを閉じる
-			this.driver.close();
+			closeWindow();
 			// 	メインウィンドウにスイッチ
 			switchToMainWindow();
 			// 一覧を更新
@@ -234,14 +234,11 @@ public abstract class Host {
 		// IFRAMEにスイッチ
 		switchToIframe();
 		// ブラックアンケートを確認
-		// （いきなり次へボタンがない場合も同様）
-		if(exists(this.currentSite.getBlackEnquetePath())
-				|| !exists(this.currentSite.getStartButtonSelector())
-				&& !exists(this.currentSite.getNextButtonSelector())) {
+		if(exists(this.currentSite.getBlackEnquetePath())) {
 			// ブラックリストに追加
 			this.blackList.add(uniqueKey);
 			// ウィンドウを閉じる
-			this.driver.close();
+			closeWindow();
 			// 	メインウィンドウにスイッチ
 			switchToMainWindow();
 			// 一覧を更新
@@ -249,11 +246,8 @@ public abstract class Host {
 			// 広告処理中断
 			return;
 		}
-		// スタートボタン
-		if(exists(this.currentSite.getStartButtonSelector())) {
-			// スタートボタン押下
-			click(this.currentSite.getStartButtonSelector());
-		}
+		// スタートボタン押下
+		click(this.currentSite.getStartButtonSelector());
 		// 最終テキストが出るまで
 		while(!existsFinalText()) {
 			// サイト取得（infopanelの場合）
@@ -264,7 +258,7 @@ public abstract class Host {
 					// ブラックリストに追加
 					this.blackList.add(uniqueKey);
 					// ウィンドウを閉じる
-					this.driver.close();
+					closeWindow();
 					// 	メインウィンドウにスイッチ
 					switchToMainWindow();
 					// 一覧を更新
@@ -273,25 +267,16 @@ public abstract class Host {
 					return;
 				}
 			}
-			// ドメインが変わったらアクション
-			else if(this.currentSite.isCheckDomainChanged()) {
-				if(!this.currentSite.getDomainPattern().matcher(this.driver.getCurrentUrl()).matches()) {
-					this.driver.executeScript(this.currentSite.getDomainChangedScript());
-					continue;
-				}
-			}
 			// 質問に回答
 			answerQuestion();
-			// 次へボタン
-			if(exists(this.currentSite.getNextButtonSelector())) {
-				// 次へボタン押下
-				click(this.currentSite.getNextButtonSelector());
-			} else {
+			// 次へボタン押下
+			if(!click(this.currentSite.getNextButtonSelector())) {
 				// 最終テキストがないのに次へボタンもない
+				System.out.println("next button not found");
 				// ブラックリストに追加
 				this.blackList.add(uniqueKey);
 				// ウィンドウを閉じる
-				this.driver.close();
+				closeWindow();
 				// 	メインウィンドウにスイッチ
 				switchToMainWindow();
 				// 一覧を更新
@@ -305,9 +290,7 @@ public abstract class Host {
 			answerQuestion();
 		}
 		// 最終ボタン押下
-		if(exists(this.currentSite.getFinalButtonSelector())) {
-			click(this.currentSite.getFinalButtonSelector());
-		}
+		click(this.currentSite.getFinalButtonSelector());
 		// おまけ質問有無
 		if(exists(this.appendAnswerButtonSelector)) {
 			// おまけ質問に回答
@@ -316,23 +299,46 @@ public abstract class Host {
 			click(this.appendAnswerButtonSelector);
 		}
 		// 完了クローズボタン有無
-		if(exists(this.completeCloseButtonSelector)) {
-			// 完了クローズボタン押下
-			click(this.completeCloseButtonSelector);
-		} else {
+		if(!click(this.completeCloseButtonSelector)) {
 			// ウィンドウを閉じる
-			this.driver.close();
+			closeWindow();
 			// 完了ウィンドウにスイッチ
-			String cmpHandle = switchToSubWindow(false);
-			if(cmpHandle != null && exists(this.completeCloseButtonSelector)) {
+			if(switchToSubWindow(false) != null) {
 				// 完了クローズボタン押下
 				click(this.completeCloseButtonSelector);
 			}
 		}
+		// 完了したらブラックリストに追加（２度開かない）
+		this.blackList.add(uniqueKey);
 		// メインウィンドウにスイッチ
 		switchToMainWindow();
 		// 一覧を更新
 		click(this.refreshLinkPath);
+		// 更新後スクリプト実行
+		executeScript(this.afterRefreshScript);
+	}
+
+	/**
+	 * ウィンドウを閉じる
+	 */
+	private void closeWindow() {
+		run(this.driver::close);
+	}
+
+	/**
+	 * ウィンドウハンドルを取得
+	 * @return ウィンドウハンドル
+	 */
+	private Set<String> getWindowHandles() {
+		return get(this.driver::getWindowHandles);
+	}
+
+	/**
+	 * ウィンドウにスイッチ
+	 * @param handle ウィンドウハンドル
+	 */
+	private void switchToWindow(String handle) {
+		accept(get(this.driver::switchTo)::window, handle);
 	}
 
 	/**
@@ -340,18 +346,14 @@ public abstract class Host {
 	 */
 	private void switchToMainWindow() {
 		// メインウィンドウ以外を閉じる
-		for(String handle : this.driver.getWindowHandles()) {
+		for(String handle : getWindowHandles()) {
 			if(!this.mainHandle.equals(handle)) {
-				try {
-					this.driver.switchTo().window(handle);
-					this.driver.close();
-				} catch(NoSuchWindowException e) {
-					// スキップ
-				}
+				switchToWindow(handle);
+				closeWindow();
 			}
 		}
 		// メインウィンドウにスイッチ
-		this.driver.switchTo().window(this.mainHandle);
+		switchToWindow(this.mainHandle);
 	}
 
 	/**
@@ -360,16 +362,17 @@ public abstract class Host {
 	 * @return サブウィンドウのハンドル
 	 */
 	private String switchToSubWindow(boolean required) {
-		// 必須時はスイッチできるまでリトライ
 		boolean b = false;
 		while(!b) {
-			for(String handle : this.driver.getWindowHandles()) {
+			// メインウィンドウ以外にスイッチ
+			for(String handle : getWindowHandles()) {
 				if(!this.mainHandle.equals(handle)) {
-					this.driver.switchTo().window(handle);
+					switchToWindow(handle);
 					b = true;
 					return handle;
 				}
 			}
+			// サブウィンドウがないとき、必須ならリトライ
 			if(!required) {
 				b = true;
 				return null;
@@ -381,12 +384,32 @@ public abstract class Host {
 	}
 
 	/**
+	 * フレームにスイッチ
+	 * @param element エレメント
+	 */
+	private void switchToFrame(WebElement element) {
+		accept(get(this.driver::switchTo)::frame, element);
+	}
+
+	/**
+	 * フレームにスイッチ
+	 * @param by By
+	 * preturn フレーム有無
+	 */
+	private boolean switchToFrame(By by) {
+		if(exists(by)) {
+			switchToFrame(findElement(by));
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * IFRAMEにスイッチ
 	 */
 	private void switchToIframe() {
-		if(this.currentSite.getIframeSelector() != null && exists(this.currentSite.getIframeSelector())) {
-			this.driver.switchTo().frame(findElement(this.currentSite.getIframeSelector()));
-		}
+		switchToFrame(this.currentSite.getIframeSelector());
 	}
 
 	/**
@@ -395,7 +418,7 @@ public abstract class Host {
 	 */
 	private EnqueteSite getEnqueteSite() {
 		// ドメインから判断
-		String url = this.driver.getCurrentUrl();
+		String url = get(this.driver::getCurrentUrl);
 		for(EnqueteSite site : this.siteList) {
 			if(site.getDomainPattern().matcher(url).matches()) {
 				return site;
@@ -411,7 +434,7 @@ public abstract class Host {
 	 */
 	private WebElement findNextEnqueteLink() {
 		for(WebElement element : findElements(this.enqueteLinkPath)) {
-			String uniqueKey = element.findElement(this.enqueteUniqueKeyPath).getText();
+			String uniqueKey = get(findElement(element, this.enqueteUniqueKeyPath)::getText);
 			if(!this.blackList.contains(uniqueKey)) {
 				return element;
 			}
@@ -424,9 +447,7 @@ public abstract class Host {
 	 */
 	private void answerQuestion() {
 		// クリック広告リンクを開く
-		if(exists(this.currentSite.getClickAdLinkSelector())) {
-			click(this.currentSite.getClickAdLinkSelector());
-		}
+		click(this.currentSite.getClickAdLinkSelector());
 		// ラジオボタンを選択
 		selectRadioButton();
 		// チェックボックスを選択
@@ -445,27 +466,19 @@ public abstract class Host {
 	private void answerSpecialQuestion() {
 		// 性別
 		if(exists(this.currentSite.getGenderQuestionPath())) {
-			if(exists(this.currentSite.getGenderAnswerPath())) {
-				click(this.currentSite.getGenderAnswerPath());
-			}
+			click(this.currentSite.getGenderAnswerPath());
 		}
 		// 年齢
 		if(exists(this.currentSite.getAgeQuestionPath())) {
-			if(exists(this.currentSite.getAgeAnswerPath())) {
-				click(this.currentSite.getAgeAnswerPath());
-			}
+			click(this.currentSite.getAgeAnswerPath());
 		}
 		// 居住地
 		if(exists(this.currentSite.getResidenceQuestionPath())) {
-			if(exists(this.currentSite.getResidenceAnswerPath())) {
-				click(this.currentSite.getResidenceAnswerPath());
-			}
+			click(this.currentSite.getResidenceAnswerPath());
 		}
 		// 職業
 		if(exists(this.currentSite.getJobQuestionPath())) {
-			if(exists(this.currentSite.getJobAnswerPath())) {
-				click(this.currentSite.getJobAnswerPath());
-			}
+			click(this.currentSite.getJobAnswerPath());
 		}
 	}
 
@@ -514,7 +527,31 @@ public abstract class Host {
 	 * @param url URL
 	 */
 	private void navigate(String url) {
-		this.driver.get(url);;
+		accept(this.driver::get, url);
+	}
+
+	/**
+	 * スクリプトを実行
+	 * @param script スクリプト
+	 */
+	private void executeScript(String script) {
+		if(StringUtils.isNotBlank(script)) {
+			accept(this.driver::executeScript, script);
+		}
+	}
+
+	/**
+	 * エレメントをサブミット
+	 * @param by By
+	 * @return エレメント有無
+	 */
+	private boolean submit(By by) {
+		if(exists(by)) {
+			run(findElement(by)::submit);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -541,7 +578,7 @@ public abstract class Host {
 		}
 		// フロート広告を閉じる
 		if(exists(this.currentSite.getFloatAdCloseButtonSelector())) {
-			this.driver.executeScript(this.currentSite.getFloatAdCloseScript());
+			executeScript(this.currentSite.getFloatAdCloseScript());
 		}
 		// 最終テキストが存在するか
 		return exists(this.currentSite.getFinalTextPath());
@@ -553,15 +590,7 @@ public abstract class Host {
 	 * @return エレメント
 	 */
 	private WebElement findElement(By by) {
-		if(by == null) return null;
-		for(;;) {
-			try {
-				return this.driver.findElement(by);
-			} catch(StaleElementReferenceException e) {
-				// リトライ
-				sleep(ERROR_WAIT_INTERVAL);
-			}
-		}
+		return apply(this.driver::findElement, by);
 	}
 
 	/**
@@ -571,27 +600,32 @@ public abstract class Host {
 	 */
 	private List<WebElement> findElements(By by) {
 		if(by == null) return null;
-		for(;;) {
-			try {
-				return this.driver.findElements(by);
-			} catch(StaleElementReferenceException e) {
-				// リトライ
-				sleep(ERROR_WAIT_INTERVAL);
-			} catch(TimeoutException e) {
-				// リトライ
-				sleep(ERROR_WAIT_INTERVAL);
-			}
-		}
+		return apply(this.driver::findElements, by);
+	}
+
+	/**
+	 * エレメント配下のエレメントを取得
+	 * @param element エレメント
+	 * @param by By
+	 * @return エレメント
+	 */
+	private WebElement findElement(WebElement element, By by) {
+		return apply(element::findElement, by);
 	}
 
 	/**
 	 * エレメントに値を設定
 	 * @param by By
 	 * @param value 値
+	 * @return エレメント有無
 	 */
-	private void setValue(By by, String value) {
-		if(!exists(by)) return;
-		findElement(by).sendKeys(value);
+	private boolean setValue(By by, String value) {
+		if(exists(by)) {
+			accept(findElement(by)::sendKeys, value);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -599,37 +633,24 @@ public abstract class Host {
 	 * @param element エレメント
 	 */
 	private void click(WebElement element) {
-		boolean b = false;
-		while(!b) {
-			try {
-				// 選択済みのチェックボックスはクリック
-				if(!"input".equalsIgnoreCase(element.getTagName()) ||
-						!"checkbox".equalsIgnoreCase(element.getAttribute("type")) ||
-						!element.isSelected()) {
-					new Actions(this.driver).moveToElement(element).perform();
-					element.click();
-				}
-				b = true;
-			} catch(TimeoutException e) {
-				// タイムアウト時は無視
-				b = true;
-			} catch(StaleElementReferenceException e) {
-				// StaleElementReferenceException時は無視
-				b = true;
-			} catch(WebDriverException e) {
-				// リトライ
-				b = false;
-				sleep(ERROR_WAIT_INTERVAL);
-			}
-		}
+		// エレメントにマウスオーバー
+		run(apply(apply(Actions::new, this.driver)::moveToElement, element)::perform);
+		// クリック
+		run(element::click);
 	}
 
 	/**
 	 * エレメントをクリック
 	 * @param by By
+	 * @return エレメント有無
 	 */
-	private void click(By by) {
-		click(findElement(by));
+	private boolean click(By by) {
+		if(exists(by)) {
+			click(findElement(by));
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -652,7 +673,7 @@ public abstract class Host {
 			// 質問グループあり
 			Pattern ptn = Pattern.compile(regexp);
 			for(WebElement elm : listAll) {
-				String value = elm.getAttribute(attr);
+				String value = apply(elm::getAttribute, attr);
 				if(!StringUtils.isBlank(value)) {
 					Matcher m = ptn.matcher(value);
 					m.find();
@@ -671,5 +692,65 @@ public abstract class Host {
 			Double index = Math.random() * (list.size() - ((list.size() >= 3) ? 1 : 0));
 			click(list.get(index.intValue()));
 		}
+	}
+
+	/**
+	 * SeleniumAPI実行（引数なし、戻り値なし）
+	 * @param method
+	 * @param arg
+	 */
+	private void run(Runnable method) {
+		try {
+			method.run();
+		} catch(WebDriverException e) {
+			// 例外は無視
+		}
+	}
+
+	/**
+	 * SeleniumAPI実行（引数あり、戻り値なし）
+	 * @param method
+	 * @param arg
+	 */
+	private <A> void accept(Consumer<A> method, A arg) {
+		try {
+			method.accept(arg);
+		} catch(WebDriverException e) {
+			// 例外は無視
+		}
+	}
+
+	/**
+	 * SeleniumAPI実行（引数なし、戻り値あり）
+	 * @param method
+	 * @return
+	 */
+	private <R> R get(Supplier<R> method) {
+		for(;;) {
+			try {
+				return method.get();
+			} catch(WebDriverException e) {
+				// 例外はリトライ
+				sleep(ERROR_WAIT_INTERVAL);
+			}
+		}
+	}
+
+	/**
+	 * SeleniumAPI実行（引数あり、戻り値あり）
+	 * @param method
+	 * @param arg
+	 * @return
+	 */
+	private <A, R> R apply(Function<A, R> method, A arg) {
+		for(;;) {
+			try {
+				return method.apply(arg);
+			} catch(WebDriverException e) {
+				// 例外はリトライ
+				sleep(ERROR_WAIT_INTERVAL);
+			}
+		}
+
 	}
 }
