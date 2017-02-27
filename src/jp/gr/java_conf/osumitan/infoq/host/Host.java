@@ -16,6 +16,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -93,8 +96,8 @@ public abstract class Host {
 	protected By completeCloseButtonSelector;
 	/** 更新リンクパス */
 	protected By refreshLinkPath;
-	/** 更新後スクリプト */
-	protected String afterRefreshScript;
+	/** アンケート前スクリプト */
+	protected String beforeEnqueteScript;
 	/** ログアウトリンクセレクタ */
 	protected By logoutLinkSelector;
 	/** ログアウトフォームセレクタ */
@@ -191,8 +194,6 @@ public abstract class Host {
 		}
 		// ログインボタン押下
 		click(this.loginButtonSelector);
-		// 更新後スクリプト実行
-		executeScript(this.afterRefreshScript);
 	}
 
 	/**
@@ -213,7 +214,12 @@ public abstract class Host {
 		// アンケートユニークキーを退避
 		String uniqueKey = get(findElement(enqueteLink, this.enqueteUniqueKeyPath)::getText);
 		// アンケートリンクをクリック
-		click(enqueteLink);
+		if(!click(enqueteLink)) {
+			// 一覧を更新
+			click(this.refreshLinkPath);
+			// 広告処理中断
+			return;
+		}
 		// アンケートウィンドウにスイッチ
 		switchToSubWindow(true);
 		// サイト取得
@@ -314,8 +320,6 @@ public abstract class Host {
 		switchToMainWindow();
 		// 一覧を更新
 		click(this.refreshLinkPath);
-		// 更新後スクリプト実行
-		executeScript(this.afterRefreshScript);
 	}
 
 	/**
@@ -433,6 +437,10 @@ public abstract class Host {
 	 * @return 次のアンケートリンク
 	 */
 	private WebElement findNextEnqueteLink() {
+		// アンケート前スクリプト実行
+		executeScript(this.beforeEnqueteScript);
+		sleep(NORMAL_WAIT_INTERVAL);
+		// 次のアンケートリンクを取得
 		for(WebElement element : findElements(this.enqueteLinkPath)) {
 			String uniqueKey = get(findElement(element, this.enqueteUniqueKeyPath)::getText);
 			if(!this.blackList.contains(uniqueKey)) {
@@ -631,23 +639,25 @@ public abstract class Host {
 	/**
 	 * エレメントをクリック
 	 * @param element エレメント
+	 * @return 処理結果
 	 */
-	private void click(WebElement element) {
+	private boolean click(WebElement element) {
 		// エレメントにマウスオーバー
-		run(apply(apply(Actions::new, this.driver)::moveToElement, element)::perform);
+		if(!run(apply(apply(Actions::new, this.driver)::moveToElement, element)::perform)) {
+			return false;
+		}
 		// クリック
-		run(element::click);
+		return run(element::click);
 	}
 
 	/**
 	 * エレメントをクリック
 	 * @param by By
-	 * @return エレメント有無
+	 * @return 処理結果
 	 */
 	private boolean click(By by) {
 		if(exists(by)) {
-			click(findElement(by));
-			return true;
+			return click(findElement(by));
 		} else {
 			return false;
 		}
@@ -698,12 +708,31 @@ public abstract class Host {
 	 * SeleniumAPI実行（引数なし、戻り値なし）
 	 * @param method
 	 * @param arg
+	 * @return 処理結果
 	 */
-	private void run(Runnable method) {
-		try {
-			method.run();
-		} catch(WebDriverException e) {
-			// 例外は無視
+	private boolean run(Runnable method) {
+		for(;;) {
+			try {
+				method.run();
+				return true;
+			} catch(ElementNotVisibleException e) {
+				// リトライ
+				sleep(ERROR_WAIT_INTERVAL);
+			} catch(TimeoutException e) {
+				// 成功扱いで無視
+				return true;
+			} catch(StaleElementReferenceException e) {
+				// 失敗扱いで無視
+				return false;
+			} catch(WebDriverException e) {
+				if(e.getMessage().indexOf("Element is not clickable") >= 0) {
+					// リトライ
+					sleep(ERROR_WAIT_INTERVAL);
+				} else {
+					// その他の例外は無視
+					return false;
+				}
+			}
 		}
 	}
 
@@ -711,12 +740,20 @@ public abstract class Host {
 	 * SeleniumAPI実行（引数あり、戻り値なし）
 	 * @param method
 	 * @param arg
+	 * @return 処理結果
 	 */
-	private <A> void accept(Consumer<A> method, A arg) {
-		try {
-			method.accept(arg);
-		} catch(WebDriverException e) {
-			// 例外は無視
+	private <A> boolean accept(Consumer<A> method, A arg) {
+		for(;;) {
+			try {
+				method.accept(arg);
+				return true;
+			} catch(TimeoutException e) {
+				// 無視
+				return false;
+			} catch(WebDriverException e) {
+				// その他の例外は無視
+				return false;
+			}
 		}
 	}
 

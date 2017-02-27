@@ -73,8 +73,8 @@ public class InfoQHost extends Host {
 		super.completeCloseButtonSelector = COMPLETE_CLOSE_BUTTON_SELECTOR;
 		// 更新リンクパス
 		super.refreshLinkPath = REFRESH_LINK_PATH;
-		// 更新後スクリプト
-		super.afterRefreshScript = AFTER_REFRESH_SCRIPT;
+		// アンケート前スクリプト
+		super.beforeEnqueteScript = AFTER_REFRESH_SCRIPT;
 		// ログアウトフォームセレクタ
 		super.logoutFormSelector = LOGOUT_FORM_SELECTOR;
 	}
