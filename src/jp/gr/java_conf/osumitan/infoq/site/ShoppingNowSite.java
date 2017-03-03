@@ -27,19 +27,19 @@ public class ShoppingNowSite extends EnqueteSite {
 		// 最終ボタンセレクタ
 		super.finalButtonSelector = super.nextButtonSelector;
 		// ラジオボタンセレクタ
-		super.radioButtonSelector = By.cssSelector("input[type='radio']");
+		super.radioButtonSelector = By.xpath("//input[@type='radio']/following-sibling::label");
 		// チェックボックスセレクタ
-		super.checkBoxSelector = By.cssSelector("input[type='checkbox']");
+		super.checkBoxSelector = By.xpath("//input[@type='checkbox']/following-sibling::label");
 		// オプションセレクタ
 		super.optionSelector = By.cssSelector("select option");
 		// 性別質問パス
 		super.genderQuestionPath = By.xpath("//h2[contains(text(),'あなたの性別を教えてください。')]");
 		// 性別回答パス
-		super.genderAnswerPath = By.xpath("//input[@value='男性']");
+		super.genderAnswerPath = By.xpath("//label[starts-with(@for,'q') and contains(text(),'男性')]");
 		// 年齢質問パス
 		super.ageQuestionPath = By.xpath("//h2[contains(text(),'あなたの年齢をお知らせください。')]");
 		// 年齢回答パス
-		super.ageAnswerPath = By.xpath("//input[@value='40代']");
+		super.ageAnswerPath = By.xpath("//label[starts-with(@for,'q') and contains(text(),'40代')]");
 		// 居住地質問パス
 		super.residenceQuestionPath = By.xpath("//h2[contains(text(),'あなたのお住まいを教えてください。')]");
 		// 居住地回答パス
@@ -47,6 +47,6 @@ public class ShoppingNowSite extends EnqueteSite {
 		// 職業質問パス
 		super.jobQuestionPath = By.xpath("//h2[contains(text(),'あなたのご職業をお知らせください。')]");
 		// 職業回答パス
-		super.jobAnswerPath = By.xpath("//input[@value='会社員（契約・派遣社員含む）']");
+		super.jobAnswerPath = By.xpath("//label[starts-with(@for,'q') and contains(text(),'会社員（契約・派遣社員含む')]");
 	}
 }

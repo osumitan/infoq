@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
@@ -272,6 +273,8 @@ public abstract class Host {
 					// 広告処理中断
 					return;
 				}
+				// IFRAMEにスイッチ
+				switchToIframe();
 			}
 			// 質問に回答
 			answerQuestion();
@@ -340,9 +343,10 @@ public abstract class Host {
 	/**
 	 * ウィンドウにスイッチ
 	 * @param handle ウィンドウハンドル
+	 * @return 処理結果
 	 */
-	private void switchToWindow(String handle) {
-		accept(get(this.driver::switchTo)::window, handle);
+	private boolean switchToWindow(String handle) {
+		return accept(get(this.driver::switchTo)::window, handle);
 	}
 
 	/**
@@ -352,8 +356,9 @@ public abstract class Host {
 		// メインウィンドウ以外を閉じる
 		for(String handle : getWindowHandles()) {
 			if(!this.mainHandle.equals(handle)) {
-				switchToWindow(handle);
-				closeWindow();
+				if(switchToWindow(handle)) {
+					closeWindow();
+				}
 			}
 		}
 		// メインウィンドウにスイッチ
@@ -717,6 +722,7 @@ public abstract class Host {
 				return true;
 			} catch(ElementNotVisibleException e) {
 				// リトライ
+//TODO					e.printStackTrace();
 				sleep(ERROR_WAIT_INTERVAL);
 			} catch(TimeoutException e) {
 				// 成功扱いで無視
@@ -727,10 +733,10 @@ public abstract class Host {
 			} catch(WebDriverException e) {
 				if(e.getMessage().indexOf("Element is not clickable") >= 0) {
 					// リトライ
+//TODO					e.printStackTrace();
 					sleep(ERROR_WAIT_INTERVAL);
 				} else {
-					// その他の例外は無視
-					return false;
+					throw e;
 				}
 			}
 		}
@@ -750,9 +756,11 @@ public abstract class Host {
 			} catch(TimeoutException e) {
 				// 無視
 				return false;
-			} catch(WebDriverException e) {
-				// その他の例外は無視
+			} catch(NoSuchWindowException e) {
+				// 無視
 				return false;
+			} catch(WebDriverException e) {
+				throw e;
 			}
 		}
 	}
@@ -766,9 +774,12 @@ public abstract class Host {
 		for(;;) {
 			try {
 				return method.get();
-			} catch(WebDriverException e) {
-				// 例外はリトライ
+			} catch(TimeoutException e) {
+				// リトライ
+//TODO				e.printStackTrace();
 				sleep(ERROR_WAIT_INTERVAL);
+			} catch(WebDriverException e) {
+				throw e;
 			}
 		}
 	}
@@ -783,9 +794,12 @@ public abstract class Host {
 		for(;;) {
 			try {
 				return method.apply(arg);
-			} catch(WebDriverException e) {
-				// 例外はリトライ
+			} catch(TimeoutException e) {
+				// リトライ
+//TODO				e.printStackTrace();
 				sleep(ERROR_WAIT_INTERVAL);
+			} catch(WebDriverException e) {
+				throw e;
 			}
 		}
 

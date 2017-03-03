@@ -21,7 +21,7 @@ public class SurveyEnqueteSite extends EnqueteSite {
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//button[contains(text(),'次へ進む')]");
 		// 最終テキストパス
-		super.finalTextPath = By.xpath("//button[contains(text(),'最初から答えなおす')]");
+		super.finalTextPath = By.xpath("//div[contains(text(),'以上でアンケートは終了です')]");
 		// 最終ボタンセレクタ
 		super.finalButtonSelector = super.nextButtonSelector;
 		// ラジオボタンセレクタ
