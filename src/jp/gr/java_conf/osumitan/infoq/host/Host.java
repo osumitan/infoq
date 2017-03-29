@@ -293,6 +293,25 @@ public abstract class Host {
 				// 広告処理中断
 				return;
 			}
+			// サイト取得（infopanelの場合）
+			else if(InfoPanelSite.DOMAIN.equals(this.currentSite.getDomain())) {
+				this.currentSite = getEnqueteSite();
+				// 未知のサイトならブラックリストに追加して中断
+				if(this.currentSite == null) {
+					// ブラックリストに追加
+					this.blackList.add(uniqueKey);
+					// ウィンドウを閉じる
+					closeWindow();
+					// 	メインウィンドウにスイッチ
+					switchToMainWindow();
+					// 一覧を更新
+					click(this.refreshLinkPath);
+					// 広告処理中断
+					return;
+				}
+				// IFRAMEにスイッチ
+				switchToIframe();
+			}
 		}
 		// 最終質問に回答
 		if(this.currentSite.isHasFinalQuestion()) {
@@ -722,7 +741,6 @@ public abstract class Host {
 				return true;
 			} catch(ElementNotVisibleException e) {
 				// リトライ
-//TODO					e.printStackTrace();
 				sleep(ERROR_WAIT_INTERVAL);
 			} catch(TimeoutException e) {
 				// 成功扱いで無視
@@ -733,7 +751,9 @@ public abstract class Host {
 			} catch(WebDriverException e) {
 				if(e.getMessage().indexOf("Element is not clickable") >= 0) {
 					// リトライ
-//TODO					e.printStackTrace();
+					sleep(ERROR_WAIT_INTERVAL);
+				} else if(e.getMessage().indexOf("unexpected alert open") >= 0) {
+					// リトライ
 					sleep(ERROR_WAIT_INTERVAL);
 				} else {
 					throw e;
@@ -776,7 +796,6 @@ public abstract class Host {
 				return method.get();
 			} catch(TimeoutException e) {
 				// リトライ
-//TODO				e.printStackTrace();
 				sleep(ERROR_WAIT_INTERVAL);
 			} catch(WebDriverException e) {
 				throw e;
@@ -796,7 +815,6 @@ public abstract class Host {
 				return method.apply(arg);
 			} catch(TimeoutException e) {
 				// リトライ
-//TODO				e.printStackTrace();
 				sleep(ERROR_WAIT_INTERVAL);
 			} catch(WebDriverException e) {
 				throw e;

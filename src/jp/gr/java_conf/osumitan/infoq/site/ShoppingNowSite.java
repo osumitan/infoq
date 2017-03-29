@@ -23,9 +23,9 @@ public class ShoppingNowSite extends EnqueteSite {
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.cssSelector("div.btn_next input");
 		// 最終テキストパス
-		super.finalTextPath = By.cssSelector("div.question_last");
+		super.finalTextPath = By.xpath("//div[contains(@class,'question_last') or contains(@class,'question_thanks')]");
 		// 最終ボタンセレクタ
-		super.finalButtonSelector = super.nextButtonSelector;
+		super.finalButtonSelector = By.xpath("//div[contains(@class,'btn_next') or contains(@class,'btn_2next')]/input");
 		// ラジオボタンセレクタ
 		super.radioButtonSelector = By.xpath("//input[@type='radio']/following-sibling::label");
 		// チェックボックスセレクタ

@@ -40,5 +40,7 @@ public class ResearchECNaviSite extends EnqueteSite {
 		this.questionGroupAttribute = "name";
 		// 質問グループ識別子
 		this.questionGroupIdentifier = "(\\w+)";
+		// ブラックアンケートパス
+		super.blackEnquetePath = By.xpath("//*[contains(text(),'既にアンケートにご協力いただいております')]");
 	}
 }

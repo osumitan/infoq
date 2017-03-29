@@ -17,7 +17,7 @@ public class PhotoEnqueteSite extends EnqueteSite {
 		// ドメイン
 		super.domain = "photo-enquete.com";
 		// ドメインパターン
-		super.domainPattern = Pattern.compile("^.*photo-enquete\\.com.*$");
+		super.domainPattern = Pattern.compile("^.*(photo-enquete\\.com|cosme-beaute\\.com).*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//input[(@type='image' and contains(@src,'btn_next')) or (@type='submit' and contains(@class,'enquete_nextbt'))]");
 		// 最終テキストパス
