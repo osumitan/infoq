@@ -99,6 +99,8 @@ public abstract class Host {
 	protected By refreshLinkPath;
 	/** アンケート前スクリプト */
 	protected String beforeEnqueteScript;
+	/** アンケート前スクリプト実行中セレクタ */
+	protected By beforeEnqueteScriptProcessingSelector;
 	/** ログアウトリンクセレクタ */
 	protected By logoutLinkSelector;
 	/** ログアウトフォームセレクタ */
@@ -463,7 +465,9 @@ public abstract class Host {
 	private WebElement findNextEnqueteLink() {
 		// アンケート前スクリプト実行
 		executeScript(this.beforeEnqueteScript);
-		sleep(NORMAL_WAIT_INTERVAL);
+		while(exists(this.beforeEnqueteScriptProcessingSelector)) {
+			sleep(NORMAL_WAIT_INTERVAL);
+		}
 		// 次のアンケートリンクを取得
 		for(WebElement element : findElements(this.enqueteLinkPath)) {
 			String uniqueKey = get(findElement(element, this.enqueteUniqueKeyPath)::getText);

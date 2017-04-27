@@ -34,8 +34,10 @@ public class InfoQHost extends Host {
 	private static final By COMPLETE_CLOSE_BUTTON_SELECTOR = By.cssSelector("input.btn_close_en");
 	/** 更新リンクパス */
 	private static final By REFRESH_LINK_PATH = By.xpath("//strong[text()='毎日たまる']//ancestor::div[@id='enquete_mypage_section']//a[@class='btn-reload']");
-	/** 更新後スクリプト */
-	private static final String AFTER_REFRESH_SCRIPT = "$('#btn_enq_result_more').click();";
+	/** 更新前スクリプト */
+	private static final String BEFORE_REFRESH_SCRIPT = "$('#btn_enq_result_more').click();";
+	/** 更新前スクリプト実行中セレクタ */
+	private static final By BEFORE_REFRESH_SCRIPT_PROCESSING_SELECTOR = By.cssSelector("#enq_result tr td img[src*=loader]");
 	/** ログアウトフォームセレクタ */
 	private static final By LOGOUT_FORM_SELECTOR = By.cssSelector("form#AccountLogoutForm");
 
@@ -74,7 +76,9 @@ public class InfoQHost extends Host {
 		// 更新リンクパス
 		super.refreshLinkPath = REFRESH_LINK_PATH;
 		// アンケート前スクリプト
-		super.beforeEnqueteScript = AFTER_REFRESH_SCRIPT;
+		super.beforeEnqueteScript = BEFORE_REFRESH_SCRIPT;
+		// アンケート前スクリプト実行中セレクタ
+		super.beforeEnqueteScriptProcessingSelector = BEFORE_REFRESH_SCRIPT_PROCESSING_SELECTOR;
 		// ログアウトフォームセレクタ
 		super.logoutFormSelector = LOGOUT_FORM_SELECTOR;
 	}

@@ -27,7 +27,7 @@ public class AdSurveySite extends EnqueteSite {
 		// 最終テキストパス
 		super.finalTextPath = By.xpath("//p[contains(text(),'アンケートは以上になります。')]");
 		// 最終ボタンセレクタ
-		super.finalButtonSelector = super.nextButtonSelector;
+		super.finalButtonSelector = super.startButtonSelector;
 		// ラジオボタンセレクタ
 		super.radioButtonSelector = By.cssSelector("div.answer input[type='radio']");
 		// チェックボックスセレクタ
