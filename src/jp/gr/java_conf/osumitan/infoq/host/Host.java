@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -469,7 +470,9 @@ public abstract class Host {
 			sleep(NORMAL_WAIT_INTERVAL);
 		}
 		// 次のアンケートリンクを取得
-		for(WebElement element : findElements(this.enqueteLinkPath)) {
+		List<WebElement> list = findElements(this.enqueteLinkPath);
+		Collections.reverse(list);
+		for(WebElement element : list) {
 			String uniqueKey = get(findElement(element, this.enqueteUniqueKeyPath)::getText);
 			if(!this.blackList.contains(uniqueKey)) {
 				return element;

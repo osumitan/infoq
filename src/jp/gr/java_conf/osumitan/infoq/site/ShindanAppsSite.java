@@ -17,7 +17,7 @@ public class ShindanAppsSite extends EnqueteSite {
 		// ドメイン
 		super.domain = "shindan-apps.net";
 		// ドメインパターン
-		super.domainPattern = Pattern.compile("^.*shindan-apps\\.net.*$");
+		super.domainPattern = Pattern.compile("^.*(shindan-apps\\.net|syouhisya-kinyu\\.com).*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//a[not(contains(@style,'none')) and (text()='　次へ　' or text()='　終了　')]");
 		// 最終テキストパス
