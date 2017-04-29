@@ -23,7 +23,7 @@ public class AdResearchSite extends EnqueteSite {
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.cssSelector("input.ui-button");
 		// 最終テキストパス
-		super.finalTextPath = By.cssSelector(".ui-button[value='ポイント獲得']");
+		super.finalTextPath = By.cssSelector(".ui-button[value*='獲得']");
 		// 最終ボタンセレクタ
 		super.finalButtonSelector = super.finalTextPath;
 		// ラジオボタンセレクタ
