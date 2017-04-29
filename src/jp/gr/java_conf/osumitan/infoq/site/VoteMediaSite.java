@@ -18,8 +18,10 @@ public class VoteMediaSite extends EnqueteSite {
 		super.domain = "vote.media-ad.jp";
 		// ドメインパターン
 		super.domainPattern = Pattern.compile("^.*vote\\.media-ad\\.jp.*$");
+		// スタートボタンセレクタ
+		super.startButtonSelector = By.cssSelector("a.start__button");
 		// 次へボタンセレクタ
-		super.nextButtonSelector = By.xpath("//*[contains(@class,'start__button') or contains(@class,'button--answer')]");
+		super.nextButtonSelector = By.cssSelector("input.button--answer");
 		// 最終テキストパス
 		super.finalTextPath = By.xpath("//*[contains(@class,'point__text') and contains(.,'お疲れ様') or contains(text(),'以上で、アンケートは終了です。')]");
 		// 最終ボタンセレクタ
