@@ -37,6 +37,7 @@ import jp.gr.java_conf.osumitan.infoq.site.KotsutaSite;
 import jp.gr.java_conf.osumitan.infoq.site.MangaEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.NResearchSite;
 import jp.gr.java_conf.osumitan.infoq.site.PhotoEnqueteSite;
+import jp.gr.java_conf.osumitan.infoq.site.QuestionHirobaSite;
 import jp.gr.java_conf.osumitan.infoq.site.QuizSite;
 import jp.gr.java_conf.osumitan.infoq.site.ResearchECNaviSite;
 import jp.gr.java_conf.osumitan.infoq.site.SaveUpSite;
@@ -140,7 +141,8 @@ public abstract class Host {
 				new PhotoEnqueteSite(),
 				new NResearchSite(),
 				new ResearchECNaviSite(),
-				new Y2atSite());
+				new Y2atSite(),
+				new QuestionHirobaSite());
 	}
 
 	/**
