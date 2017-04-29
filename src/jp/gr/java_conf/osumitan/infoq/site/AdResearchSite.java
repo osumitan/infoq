@@ -17,9 +17,11 @@ public class AdResearchSite extends EnqueteSite {
 		// ドメイン
 		super.domain = "ad-research.jp";
 		// ドメインパターン
-		super.domainPattern = Pattern.compile("^.*ad-research\\.jp.*$");
+		super.domainPattern = Pattern.compile("^.*(ad-research\\.jp|ad-contents\\.jp).*$");
+		// スタートボタンセレクタ
+		super.startButtonSelector = By.cssSelector("a.ui-button");
 		// 次へボタンセレクタ
-		super.nextButtonSelector = By.cssSelector(".ui-button");
+		super.nextButtonSelector = By.cssSelector("input.ui-button");
 		// 最終テキストパス
 		super.finalTextPath = By.cssSelector(".ui-button[value='ポイント獲得']");
 		// 最終ボタンセレクタ
