@@ -26,6 +26,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import jp.gr.java_conf.osumitan.infoq.exception.BlackListException;
 import jp.gr.java_conf.osumitan.infoq.site.AdResearchSite;
 import jp.gr.java_conf.osumitan.infoq.site.AdSurveySite;
 import jp.gr.java_conf.osumitan.infoq.site.ColumnEnqueteSite;
@@ -59,6 +60,8 @@ public abstract class Host {
 	private static final long NORMAL_WAIT_INTERVAL = 1000L;
 	/** エラー時ウェイト */
 	private static final long ERROR_WAIT_INTERVAL = 5000L;
+	/** タイムアウト時リトライ回数 */
+	private static final int TIMEOUT_RETRY_COUNT = 3;
 
 	/** ドライバ */
 	protected RemoteWebDriver driver;
@@ -156,8 +159,23 @@ public abstract class Host {
 		// 未回答がなくなるまで
 		WebElement enqueteLink;
 		while((enqueteLink = findNextEnqueteLink()) != null) {
-			// アンケートに回答
-			enquete(enqueteLink);
+			try {
+				// アンケートに回答
+				enquete(enqueteLink);
+			} catch(BlackListException e) {
+				// ブラックリストに追加
+				this.blackList.add(e.getUniqueKey());
+				// ウィンドウを閉じる
+				closeWindow();
+			} catch(TimeoutException e) {
+				// リトライアウトのタイムアウトは開き直し
+				// ウィンドウを閉じる
+				closeWindow();
+			}
+			// 	メインウィンドウにスイッチ
+			switchToMainWindow();
+			// 一覧を更新
+			click(this.refreshLinkPath);
 		}
 		// ログアウト
 		logout();
@@ -221,10 +239,8 @@ public abstract class Host {
 		String uniqueKey = get(findElement(enqueteLink, this.enqueteUniqueKeyPath)::getText);
 		// アンケートリンクをクリック
 		if(!click(enqueteLink)) {
-			// 一覧を更新
-			click(this.refreshLinkPath);
-			// 広告処理中断
-			return;
+			// アンケートリンクが開けなければブラックリストに追加して中断
+			throw new BlackListException(uniqueKey);
 		}
 		// アンケートウィンドウにスイッチ
 		switchToSubWindow(true);
@@ -232,31 +248,13 @@ public abstract class Host {
 		this.currentSite = getEnqueteSite();
 		// 未知のサイトならブラックリストに追加して中断
 		if(this.currentSite == null) {
-			// ブラックリストに追加
-			this.blackList.add(uniqueKey);
-			// ウィンドウを閉じる
-			closeWindow();
-			// 	メインウィンドウにスイッチ
-			switchToMainWindow();
-			// 一覧を更新
-			click(this.refreshLinkPath);
-			// 広告処理中断
-			return;
+			throw new BlackListException(uniqueKey);
 		}
 		// IFRAMEにスイッチ
 		switchToIframe();
-		// ブラックアンケートを確認
+		// ブラックアンケートならブラックリストに追加して中断
 		if(exists(this.currentSite.getBlackEnquetePath())) {
-			// ブラックリストに追加
-			this.blackList.add(uniqueKey);
-			// ウィンドウを閉じる
-			closeWindow();
-			// 	メインウィンドウにスイッチ
-			switchToMainWindow();
-			// 一覧を更新
-			click(this.refreshLinkPath);
-			// 広告処理中断
-			return;
+			throw new BlackListException(uniqueKey);
 		}
 		// スタートボタン押下
 		click(this.currentSite.getStartButtonSelector());
@@ -267,16 +265,7 @@ public abstract class Host {
 				this.currentSite = getEnqueteSite();
 				// 未知のサイトならブラックリストに追加して中断
 				if(this.currentSite == null) {
-					// ブラックリストに追加
-					this.blackList.add(uniqueKey);
-					// ウィンドウを閉じる
-					closeWindow();
-					// 	メインウィンドウにスイッチ
-					switchToMainWindow();
-					// 一覧を更新
-					click(this.refreshLinkPath);
-					// 広告処理中断
-					return;
+					throw new BlackListException(uniqueKey);
 				}
 				// IFRAMEにスイッチ
 				switchToIframe();
@@ -287,32 +276,15 @@ public abstract class Host {
 			if(!click(this.currentSite.getNextButtonSelector())) {
 				// 最終テキストがないのに次へボタンもない
 				System.out.println("next button not found");
-				// ブラックリストに追加
-				this.blackList.add(uniqueKey);
-				// ウィンドウを閉じる
-				closeWindow();
-				// 	メインウィンドウにスイッチ
-				switchToMainWindow();
-				// 一覧を更新
-				click(this.refreshLinkPath);
-				// 広告処理中断
-				return;
+				// ブラックリストに追加して中断
+				throw new BlackListException(uniqueKey);
 			}
 			// サイト取得（infopanelの場合）
 			else if(InfoPanelSite.DOMAIN.equals(this.currentSite.getDomain())) {
 				this.currentSite = getEnqueteSite();
 				// 未知のサイトならブラックリストに追加して中断
 				if(this.currentSite == null) {
-					// ブラックリストに追加
-					this.blackList.add(uniqueKey);
-					// ウィンドウを閉じる
-					closeWindow();
-					// 	メインウィンドウにスイッチ
-					switchToMainWindow();
-					// 一覧を更新
-					click(this.refreshLinkPath);
-					// 広告処理中断
-					return;
+					throw new BlackListException(uniqueKey);
 				}
 				// IFRAMEにスイッチ
 				switchToIframe();
@@ -341,12 +313,8 @@ public abstract class Host {
 				click(this.completeCloseButtonSelector);
 			}
 		}
-		// 完了したらブラックリストに追加（２度開かない）
+		// 完了したらブラックリストに追加（一覧から消えないものを再度開かないため）
 		this.blackList.add(uniqueKey);
-		// メインウィンドウにスイッチ
-		switchToMainWindow();
-		// 一覧を更新
-		click(this.refreshLinkPath);
 	}
 
 	/**
@@ -800,12 +768,17 @@ public abstract class Host {
 	 * @return
 	 */
 	private <R> R get(Supplier<R> method) {
+		int timeout = 0;
 		for(;;) {
 			try {
 				return method.get();
 			} catch(TimeoutException e) {
 				// リトライ
-				sleep(ERROR_WAIT_INTERVAL);
+				if(timeout++ < TIMEOUT_RETRY_COUNT) {
+					sleep(ERROR_WAIT_INTERVAL);
+				} else {
+					throw e;
+				}
 			} catch(WebDriverException e) {
 				throw e;
 			}
@@ -819,12 +792,17 @@ public abstract class Host {
 	 * @return
 	 */
 	private <A, R> R apply(Function<A, R> method, A arg) {
+		int timeout = 0;
 		for(;;) {
 			try {
 				return method.apply(arg);
 			} catch(TimeoutException e) {
 				// リトライ
-				sleep(ERROR_WAIT_INTERVAL);
+				if(timeout++ < TIMEOUT_RETRY_COUNT) {
+					sleep(ERROR_WAIT_INTERVAL);
+				} else {
+					throw e;
+				}
 			} catch(WebDriverException e) {
 				throw e;
 			}
