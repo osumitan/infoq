@@ -17,7 +17,7 @@ public class ColumnEnqueteSite extends EnqueteSite {
 		// ドメイン
 		super.domain = "column-enquete.com";
 		// ドメインパターン
-		super.domainPattern = Pattern.compile("^.*column-enquete\\.com.*$");
+		super.domainPattern = Pattern.compile("^.*(column-enquete\\.com|beautynail-design\\.com).*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//input[(@type='image' and (contains(@src,'next_bt') or contains(@src,'read_column')) ) or (@type='submit' and @class='enquete_nextbt')]");
 		// 最終テキストパス

@@ -17,7 +17,7 @@ public class QuestionHirobaSite extends EnqueteSite {
 		// ドメイン
 		super.domain = "question-hiroba.com";
 		// ドメインパターン
-		super.domainPattern = Pattern.compile("^.*question-hiroba\\.com.*$");
+		super.domainPattern = Pattern.compile("^.*(question-hiroba\\.com|minitame\\.com|minnanosurvey\\.com).*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.cssSelector("button.next-btn");
 		// 最終テキストパス
