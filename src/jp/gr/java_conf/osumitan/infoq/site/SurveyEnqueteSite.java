@@ -17,7 +17,7 @@ public class SurveyEnqueteSite extends EnqueteSite {
 		// ドメイン
 		super.domain = "mini.surveyenquete.net";
 		// ドメインパターン
-		super.domainPattern = Pattern.compile("^.*mini\\.surveyenquete\\.net.*$");
+		super.domainPattern = Pattern.compile("^.*(mini\\.surveyenquete\\.net|ec-bought\\.com).*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//button[contains(text(),'次へ進む')]");
 		// 最終テキストパス
