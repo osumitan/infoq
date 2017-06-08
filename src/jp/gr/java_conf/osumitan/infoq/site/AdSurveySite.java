@@ -17,7 +17,7 @@ public class AdSurveySite extends EnqueteSite {
 		// ドメイン
 		super.domain = "adsurvey.media-ad.jp";
 		// ドメインパターン
-		super.domainPattern = Pattern.compile("^.*adsurvey\\.media-ad\\.jp.*$");
+		super.domainPattern = Pattern.compile("^.*(adsurvey\\.media-ad\\.jp|apple\\.questioon\\.online).*$");
 		// IFRAMEセレクタ
 		super.iframeSelector = By.cssSelector("iframe.question_frame");
 		// スタートボタンセレクタ
