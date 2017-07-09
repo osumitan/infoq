@@ -30,7 +30,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		try {
-			new Main().start();
+			new Main().start(args != null && args.length >= 1 ? args[0] : null);
 		} catch(Throwable e) {
 			e.printStackTrace();
 		}
@@ -46,16 +46,22 @@ public class Main {
 
 	/**
 	 * スタート
+	 * @param prm パラメータ
 	 */
-	private void start() {
+	private void start(String prm) {
 		// ドライバ初期化
 		RemoteWebDriver driver = initDriver();
 		// ホスト分ループ
 		for(Function<RemoteWebDriver, Host> constructor : this.hostList) {
 			Host host = constructor.apply(driver);
-			System.out.println(host.getClass().getName() + ":start");
-			host.start();
-			System.out.println(host.getClass().getName() + ":end");
+			int index = this.hostList.indexOf(constructor);
+			if(prm == null || index < prm.length() && prm.charAt(index) == '1') {
+				System.out.println(host.getClass().getName() + ":start");
+				host.start();
+				System.out.println(host.getClass().getName() + ":end");
+			} else {
+				System.out.println(host.getClass().getName() + ":skip");
+			}
 		}
 		// ウィンドウを閉じる
 		driver.quit();
