@@ -68,6 +68,8 @@ public abstract class EnqueteSite {
 	protected String questionGroupAttribute;
 	/** 質問グループ識別子 */
 	protected String questionGroupIdentifier;
+	/** 同意チェックボックスセレクタ */
+	protected By agreeCheckBoxSelector;
 
 	/**
 	 * コンストラクタ
@@ -272,5 +274,12 @@ public abstract class EnqueteSite {
 	 */
 	public String getQuestionGroupIdentifier() {
 		return questionGroupIdentifier;
+	}
+
+	/**
+	 * @return agreeCheckBoxSelector
+	 */
+	public By getAgreeCheckBoxSelector() {
+		return agreeCheckBoxSelector;
 	}
 }

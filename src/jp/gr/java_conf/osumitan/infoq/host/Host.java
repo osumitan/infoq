@@ -451,6 +451,10 @@ public abstract class Host {
 		inputTextArea();
 		// 特殊質問に回答
 		answerSpecialQuestion();
+		// 同意チェックボックス
+		if(exists(this.currentSite.getAgreeCheckBoxSelector())) {
+			click(this.currentSite.getAgreeCheckBoxSelector());
+		}
 	}
 
 	/**

@@ -54,5 +54,7 @@ public class AdSurveySite extends EnqueteSite {
 		this.toWaitBeforeEveryAction = true;
 		// ブラックアンケートパス
 		super.blackEnquetePath = By.xpath("//*[contains(text(),'アンケートは見つかりませんでした') or contains(text(),'アンケートに回答済みです。')]");
+		// 同意チェックボックスセレクタ
+		super.agreeCheckBoxSelector = By.cssSelector("#agree_checkbox");
 	}
 }
