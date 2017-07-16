@@ -287,6 +287,12 @@ public abstract class Host {
 			clickRandom(this.appendCheckBoxSelector);
 			click(this.appendAnswerButtonSelector);
 		}
+		// 完了クローズボタンを待つ
+		if(this.currentSite.isToWaitCompleteCloseButton()) {
+			while(!exists(this.completeCloseButtonSelector)) {
+				sleep(NORMAL_WAIT_INTERVAL);
+			}
+		}
 		// 完了クローズボタン有無
 		if(!click(this.completeCloseButtonSelector)) {
 			// ウィンドウを閉じる
@@ -454,6 +460,11 @@ public abstract class Host {
 		// 同意チェックボックス
 		if(exists(this.currentSite.getAgreeCheckBoxSelector())) {
 			click(this.currentSite.getAgreeCheckBoxSelector());
+		}
+		// 画像変化スタート
+		if(exists(this.currentSite.getImageChangeStartSelector())) {
+			click(this.currentSite.getImageChangeStartSelector());
+			sleep(11000L);
 		}
 	}
 
