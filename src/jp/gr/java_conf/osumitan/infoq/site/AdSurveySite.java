@@ -24,6 +24,8 @@ public class AdSurveySite extends EnqueteSite {
 		super.startButtonSelector = By.cssSelector("div.btn_next input.btn_regular");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.cssSelector("div.btn_next input.btn");
+		// 次へボタン押下前スクリプト
+		super.scriptBeforeNextButton = "if($) $('div.layered').css('display','none');";
 		// 最終テキストパス
 		super.finalTextPath = By.xpath("//p[contains(text(),'アンケートは以上になります。')]");
 		// 最終ボタンセレクタ
@@ -43,7 +45,7 @@ public class AdSurveySite extends EnqueteSite {
 		// 年齢回答パス
 		super.ageAnswerPath = By.xpath("//label[text()='40代']/preceding-sibling::input[1]");
 		// 居住地質問パス
-		super.residenceQuestionPath = By.xpath("//b[contains(text(),'あなたのお住まいを教えてください。')]");
+		super.residenceQuestionPath = By.xpath("//h2[contains(text(),'あなたのお住まいを教えてください。')]");
 		// 居住地回答パス
 		super.residenceAnswerPath = By.xpath("//option[contains(text(),'千葉県')]");
 		// 職業質問パス

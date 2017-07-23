@@ -240,6 +240,8 @@ public abstract class Host {
 		if(exists(this.currentSite.getBlackEnquetePath())) {
 			throw new BlackListException(uniqueKey);
 		}
+		// 次へボタン押下前スクリプト
+		executeScript(this.currentSite.getScriptBeforeNextButton());
 		// スタートボタン押下
 		click(this.currentSite.getStartButtonSelector());
 		// 最終テキストが出るまで
@@ -256,6 +258,8 @@ public abstract class Host {
 			}
 			// 質問に回答
 			answerQuestion();
+			// 次へボタン押下前スクリプト
+			executeScript(this.currentSite.getScriptBeforeNextButton());
 			// 次へボタン押下
 			if(!click(this.currentSite.getNextButtonSelector())) {
 				// 最終テキストがないのに次へボタンもない
@@ -726,8 +730,8 @@ public abstract class Host {
 				return false;
 			} catch(WebDriverException e) {
 				if(e.getMessage().indexOf("Element is not clickable") >= 0) {
-					// リトライ
-					sleep(ERROR_WAIT_INTERVAL);
+					// 失敗扱いで無視
+					return false;
 				} else if(e.getMessage().indexOf("unexpected alert open") >= 0) {
 					// リトライ
 					sleep(ERROR_WAIT_INTERVAL);

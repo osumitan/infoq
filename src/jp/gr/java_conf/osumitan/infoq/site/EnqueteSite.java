@@ -22,6 +22,8 @@ public abstract class EnqueteSite {
 	protected By startButtonSelector;
 	/** 次へボタンセレクタ */
 	protected By nextButtonSelector;
+	/** 次へボタン押下前スクリプト */
+	protected String scriptBeforeNextButton;
 	/** 最終テキストパス */
 	protected By finalTextPath;
 	/** 最終ボタンセレクタ */
@@ -120,6 +122,13 @@ public abstract class EnqueteSite {
 	 */
 	public By getStartButtonSelector() {
 		return startButtonSelector;
+	}
+
+	/**
+	 * @return scriptBeforeNextButton
+	 */
+	public String getScriptBeforeNextButton() {
+		return scriptBeforeNextButton;
 	}
 
 	/**
