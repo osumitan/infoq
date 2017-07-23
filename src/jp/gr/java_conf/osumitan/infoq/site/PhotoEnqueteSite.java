@@ -17,7 +17,7 @@ public class PhotoEnqueteSite extends EnqueteSite {
 		// ドメイン
 		super.domain = "photo-enquete.com";
 		// ドメインパターン
-		super.domainPattern = Pattern.compile("^.*(photo-enquete\\.com|cosme-beaute\\.com|cosmetic-brand\\.com|cosmeticsstyle\\.com).*$");
+		super.domainPattern = Pattern.compile("^.*(photo-enquete\\.com|cosme-beaute\\.com|cosmetic-brand\\.com|cosmeticsstyle\\.com|eyemake-beauty\\.com).*$");
 		// 次へボタンセレクタ
 		super.nextButtonSelector = By.xpath("//input[(@type='image' and contains(@src,'btn_next')) or (@type='submit' and contains(@class,'enquete_nextbt'))]");
 		// 最終テキストパス
@@ -38,6 +38,8 @@ public class PhotoEnqueteSite extends EnqueteSite {
 		super.ageQuestionPath = By.xpath("//*[contains(text(),'あなたの年齢をお知らせ下さい')]");
 		// 年齢回答パス
 		super.ageAnswerPath = By.xpath("//input[@type='radio' and @value='4']/ancestor::li/label[contains(@for,'que')]");
+		// 画像変化スタートセレクタ
+		super.imageChangeStartSelector = By.cssSelector("div#start");
 		// フロート広告クローズボタンセレクタ
 		super.floatAdCloseButtonSelector = By.cssSelector("#inter-close");
 		// フロート広告クローズスクリプト

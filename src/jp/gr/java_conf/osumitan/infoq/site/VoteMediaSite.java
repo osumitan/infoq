@@ -30,5 +30,7 @@ public class VoteMediaSite extends EnqueteSite {
 		super.radioButtonSelector = By.cssSelector("label.radio");
 		// アクションのたびに待つ
 		this.toWaitBeforeEveryAction = true;
+		// 完了クローズボタンを待つ
+		this.toWaitCompleteCloseButton = true;
 	}
 }

@@ -52,6 +52,8 @@ public abstract class EnqueteSite {
 	protected By jobQuestionPath;
 	/** 職業回答パス */
 	protected By jobAnswerPath;
+	/** 画像変化スタートセレクタ */
+	protected By imageChangeStartSelector;
 	/** クリック広告リンクセレクタ */
 	protected By clickAdLinkSelector;
 	/** ブラックアンケートパス */
@@ -70,6 +72,8 @@ public abstract class EnqueteSite {
 	protected String questionGroupIdentifier;
 	/** 同意チェックボックスセレクタ */
 	protected By agreeCheckBoxSelector;
+	/** 完了クローズボタンを待つ */
+	protected boolean toWaitCompleteCloseButton;
 
 	/**
 	 * コンストラクタ
@@ -79,6 +83,8 @@ public abstract class EnqueteSite {
 		this.toWaitBeforeEveryAction = false;
 		// アクションのたびに待つ時間
 		this.toWaitBeforeEveryActionTime = DEFAULT_TO_WAIT_BEFORE_EVERY_ACTION_TIME;
+		// 完了クローズボタンを待つ
+		this.toWaitCompleteCloseButton = false;
 	}
 
 	/**
@@ -221,6 +227,13 @@ public abstract class EnqueteSite {
 	}
 
 	/**
+	 * @return imageChangeStartSelector
+	 */
+	public By getImageChangeStartSelector() {
+		return imageChangeStartSelector;
+	}
+
+	/**
 	 * @return clickAdLinkSelector
 	 */
 	public By getClickAdLinkSelector() {
@@ -281,5 +294,12 @@ public abstract class EnqueteSite {
 	 */
 	public By getAgreeCheckBoxSelector() {
 		return agreeCheckBoxSelector;
+	}
+
+	/**
+	 * @return toWaitCompleteCloseButton
+	 */
+	public boolean isToWaitCompleteCloseButton() {
+		return toWaitCompleteCloseButton;
 	}
 }
