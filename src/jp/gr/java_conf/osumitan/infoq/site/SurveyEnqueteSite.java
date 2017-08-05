@@ -25,19 +25,19 @@ public class SurveyEnqueteSite extends EnqueteSite {
 		// 最終ボタンセレクタ
 		super.finalButtonSelector = super.nextButtonSelector;
 		// ラジオボタンセレクタ
-		super.radioButtonSelector = By.cssSelector("input[type='radio'][name^='Q']");
+		super.radioButtonSelector = By.xpath("//input[@type='radio' and (starts-with(@name,'Q') or starts-with(@name,'F'))]");
 		// チェックボックスセレクタ
-		super.checkBoxSelector = By.cssSelector("input[type='checkbox'][name^='Q']");
+		super.checkBoxSelector = By.xpath("//input[@type='checkbox' and (starts-with(@name,'Q') or starts-with(@name,'F'))]");
 		// オプションセレクタ
-		super.optionSelector = By.cssSelector("select[name^='Q'] option");
+		super.optionSelector = By.xpath("//select[starts-with(@name,'Q') or starts-with(@name,'F')]/option");
 		// 性別質問パス
 		super.genderQuestionPath = By.xpath("//div[contains(text(),'あなたの性別をお知らせください。')]");
 		// 性別回答パス
-		super.genderAnswerPath = By.xpath("//span[text()='男性']/ancestor::label//input[@type='radio']");
+		super.genderAnswerPath = By.xpath("//label[text()='男性']/input[@type='radio']");
 		// 年齢質問パス
 		super.ageQuestionPath = By.xpath("//div[contains(text(),'あなたの年齢をお知らせください。')]");
 		// 年齢回答パス
-		super.ageAnswerPath = By.xpath("//span[text()='40-44歳']/ancestor::label//input[@type='radio']");
+		super.ageAnswerPath = By.xpath("//label[text()='40-44歳']/input[@type='radio']");
 		// 居住地質問パス
 		super.residenceQuestionPath = By.xpath("//div[contains(text(),'あなたのお住まいをお知らせください。')]");
 		// 居住地回答パス
@@ -45,6 +45,6 @@ public class SurveyEnqueteSite extends EnqueteSite {
 		// 職業質問パス
 		super.jobQuestionPath = By.xpath("//div[contains(text(),'あなたのご職業をお知らせください。')]");
 		// 職業回答パス
-		super.jobAnswerPath = By.xpath("//span[text()='会社員']/ancestor::label//input[@type='radio']");
+		super.jobAnswerPath = By.xpath("//label[text()='会社員']/input[@type='radio']");
 	}
 }
