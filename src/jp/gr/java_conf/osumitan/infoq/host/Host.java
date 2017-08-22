@@ -35,6 +35,7 @@ import jp.gr.java_conf.osumitan.infoq.site.HikikagamiGqxSite;
 import jp.gr.java_conf.osumitan.infoq.site.HikikagamiR8Site;
 import jp.gr.java_conf.osumitan.infoq.site.InfoPanelSite;
 import jp.gr.java_conf.osumitan.infoq.site.KotsutaSite;
+import jp.gr.java_conf.osumitan.infoq.site.KotsutameSite;
 import jp.gr.java_conf.osumitan.infoq.site.MangaEnqueteSite;
 import jp.gr.java_conf.osumitan.infoq.site.NResearchSite;
 import jp.gr.java_conf.osumitan.infoq.site.PhotoEnqueteSite;
@@ -145,7 +146,8 @@ public abstract class Host {
 				new NResearchSite(),
 				new ResearchECNaviSite(),
 				new Y2atSite(),
-				new QuestionHirobaSite());
+				new QuestionHirobaSite(),
+				new KotsutameSite());
 	}
 
 	/**
@@ -162,7 +164,10 @@ public abstract class Host {
 				enquete(enqueteLink);
 			} catch(BlackListException e) {
 				// ブラックリストに追加
-				this.blackList.add(e.getUniqueKey());
+				String uniqueKey = e.getUniqueKey();
+				if(uniqueKey != null) {
+					this.blackList.add(uniqueKey);
+				}
 				// ウィンドウを閉じる
 				closeWindow();
 			} catch(TimeoutException e) {
@@ -221,6 +226,10 @@ public abstract class Host {
 	private void enquete(WebElement enqueteLink) {
 		// アンケートユニークキーを退避
 		String uniqueKey = get(findElement(enqueteLink, this.enqueteUniqueKeyPath)::getText);
+		if(uniqueKey == null) {
+			// ユニークキーが取れなければやり直し
+			throw new BlackListException(null);
+		}
 		// アンケートリンクをクリック
 		if(!click(enqueteLink)) {
 			// アンケートリンクが開けなければブラックリストに追加して中断
@@ -428,21 +437,40 @@ public abstract class Host {
 	 * @return 次のアンケートリンク
 	 */
 	private WebElement findNextEnqueteLink() {
-		// アンケート前スクリプト実行
-		executeScript(this.beforeEnqueteScript);
-		while(exists(this.beforeEnqueteScriptProcessingSelector)) {
-			sleep(NORMAL_WAIT_INTERVAL);
-		}
-		// 次のアンケートリンクを取得
-		List<WebElement> list = findElements(this.enqueteLinkPath);
-		Collections.reverse(list);
-		for(WebElement element : list) {
-			String uniqueKey = get(findElement(element, this.enqueteUniqueKeyPath)::getText);
-			if(!this.blackList.contains(uniqueKey)) {
-				return element;
+		for(;;) {
+			boolean b = false;
+			// アンケート前スクリプト実行
+			executeScript(this.beforeEnqueteScript);
+			while(exists(this.beforeEnqueteScriptProcessingSelector)) {
+				sleep(NORMAL_WAIT_INTERVAL);
 			}
+			// 次のアンケートリンクを取得
+			List<WebElement> list = findElements(this.enqueteLinkPath);
+			Collections.reverse(list);
+			for(WebElement element : list) {
+				WebElement textElement = findElement(element, this.enqueteUniqueKeyPath);
+				if(textElement == null) {
+					// やり直す
+					b = true;
+					break;
+				}
+				String uniqueKey = get(textElement::getText);
+				if(uniqueKey == null) {
+					// やり直す
+					b = true;
+					break;
+				}
+				if(!this.blackList.contains(uniqueKey)) {
+					return element;
+				}
+			}
+			if(b) {
+				// やり直し
+				continue;
+			}
+			// 終了
+			return null;
 		}
-		return null;
 	}
 
 	/**
@@ -729,7 +757,10 @@ public abstract class Host {
 				// 失敗扱いで無視
 				return false;
 			} catch(WebDriverException e) {
-				if(e.getMessage().indexOf("Element is not clickable") >= 0) {
+				if(e.getMessage().indexOf("Other element would receive the click") >= 0) {
+					// リトライ
+					sleep(ERROR_WAIT_INTERVAL);
+				} else if(e.getMessage().indexOf("Element is not clickable") >= 0) {
 					// 失敗扱いで無視
 					return false;
 				} else if(e.getMessage().indexOf("unexpected alert open") >= 0) {
@@ -782,6 +813,9 @@ public abstract class Host {
 				} else {
 					throw e;
 				}
+			} catch(StaleElementReferenceException e) {
+				// あきらめる
+				return null;
 			} catch(WebDriverException e) {
 				throw e;
 			}
@@ -806,6 +840,9 @@ public abstract class Host {
 				} else {
 					throw e;
 				}
+			} catch(StaleElementReferenceException e) {
+				// あきらめる
+				return null;
 			} catch(WebDriverException e) {
 				throw e;
 			}
