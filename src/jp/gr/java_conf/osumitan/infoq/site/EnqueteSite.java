@@ -76,6 +76,10 @@ public abstract class EnqueteSite {
 	protected By agreeCheckBoxSelector;
 	/** 完了クローズボタンを待つ */
 	protected boolean toWaitCompleteCloseButton;
+	/** RECAPTCHAセレクタ */
+	protected By recaptchaSelector;
+	/** RECAPTCHAチェックセレクタ */
+	protected By recaptchaCheckSelector;
 
 	/**
 	 * コンストラクタ
@@ -87,6 +91,10 @@ public abstract class EnqueteSite {
 		this.toWaitBeforeEveryActionTime = DEFAULT_TO_WAIT_BEFORE_EVERY_ACTION_TIME;
 		// 完了クローズボタンを待つ
 		this.toWaitCompleteCloseButton = false;
+		// RECAPTCHAセレクタ
+		this.recaptchaSelector = By.cssSelector("iframe[title='reCAPTCHA ウィジェット']");
+		// RECAPTCHAチェックセレクタ
+		this.recaptchaCheckSelector = By.cssSelector(".recaptcha-checkbox-checked");
 	}
 
 	/**
@@ -310,5 +318,19 @@ public abstract class EnqueteSite {
 	 */
 	public boolean isToWaitCompleteCloseButton() {
 		return toWaitCompleteCloseButton;
+	}
+
+	/**
+	 * @return recaptchaSelector
+	 */
+	public By getRecaptchaSelector() {
+		return recaptchaSelector;
+	}
+
+	/**
+	 * @return recaptchaCheckSelector
+	 */
+	public By getRecaptchaCheckSelector() {
+		return recaptchaCheckSelector;
 	}
 }
